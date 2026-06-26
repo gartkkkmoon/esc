@@ -33,8 +33,9 @@ export default function RealEstateEscrowPage() {
           />
           <div className="relative mx-auto max-w-5xl px-6 py-20 text-center">
             <p className="text-sm font-semibold uppercase tracking-wide text-gold">Real Estate Escrow</p>
-            <h1 className="mt-4 text-3xl font-semibold text-white md:text-4xl">
-              Decades of Title &amp; Closing Experience
+            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl">
+              Real Estate Closings,
+              <br className="hidden sm:block" /> Secure and Simple
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-white/70">
               Broker&apos;s Title &amp; Escrow, LLC has handled residential and commercial closings,
@@ -55,7 +56,7 @@ export default function RealEstateEscrowPage() {
 
         <section className="border-t border-border-soft bg-white py-16">
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-center text-xl font-semibold text-navy">How It Works</h2>
+            <h2 className="text-center font-serif text-3xl font-bold text-navy">How It Works</h2>
             <div className="mt-10 grid gap-6 sm:grid-cols-3">
               <ProcessStep n={1} icon={<FileSignature className="h-5 w-5 text-gold" />} title="Open Your File" desc="Contact our team with your purchase agreement or closing instructions." />
               <ProcessStep n={2} icon={<Handshake className="h-5 w-5 text-gold" />} title="Title &amp; Escrow Review" desc="We order title, coordinate with lenders, and prepare closing documents." />
@@ -69,7 +70,7 @@ export default function RealEstateEscrowPage() {
             <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm md:p-10">
               <div className="grid gap-10 md:grid-cols-2">
                 <div>
-                  <h2 className="text-xl font-semibold text-white">Start a Real Estate Escrow Request</h2>
+                  <h2 className="font-serif text-2xl font-bold text-white">Start a Real Estate Escrow Request</h2>
                   <p className="mt-2 text-sm text-white/60">
                     Contact our team to open a file for your residential or commercial closing.
                     We&apos;ll respond within one business day.

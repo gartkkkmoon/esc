@@ -31,8 +31,9 @@ export default function CryptoEscrowPage() {
           />
           <div className="relative mx-auto max-w-5xl px-6 py-20 text-center">
             <p className="text-sm font-semibold uppercase tracking-wide text-gold">Crypto Escrow</p>
-            <h1 className="mt-4 text-3xl font-semibold text-white md:text-4xl">
-              Secure Cryptocurrency Escrow, Built on Decades of Trust
+            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl">
+              Secure Cryptocurrency Escrow,
+              <br className="hidden sm:block" /> Built on Decades of Trust
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-white/70">
               Buyer and seller open an escrow contract together. Funds are confirmed on-chain,
@@ -57,7 +58,7 @@ export default function CryptoEscrowPage() {
 
         <section id="how-it-works" className="bg-background py-16">
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-center text-xl font-semibold text-navy">How It Works</h2>
+            <h2 className="text-center font-serif text-3xl font-bold text-navy">How It Works</h2>
             <div className="mt-8 grid gap-6 sm:grid-cols-3">
               <Step n={1} icon={<Lock className="h-5 w-5 text-gold" />} title="Buyer Creates Contract" desc="Set the asset, amount, and terms, then invite the seller via a secure link." />
               <Step n={2} icon={<Scale className="h-5 w-5 text-gold" />} title="Seller Joins & Funds Confirm" desc="Seller accepts terms. Buyer sends crypto; our team confirms the deposit on-chain." />
@@ -68,7 +69,7 @@ export default function CryptoEscrowPage() {
 
         <section className="border-t border-border-soft bg-white py-16">
           <div className="mx-auto max-w-5xl px-6">
-            <h2 className="text-center text-xl font-semibold text-navy">Why Choose Us</h2>
+            <h2 className="text-center font-serif text-3xl font-bold text-navy">Why Choose Us</h2>
             <div className="mt-10 grid items-center gap-10 md:grid-cols-2">
               <div className="rounded-2xl border border-border-soft bg-background p-8">
                 <h3 className="text-lg font-semibold text-navy">Identity Verification (KYC)</h3>

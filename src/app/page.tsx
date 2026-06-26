@@ -1,82 +1,159 @@
 import Link from "next/link";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
-import { ShieldCheck, FileCheck2, Globe2, Wallet, UserCheck, FileLock2 } from "lucide-react";
+import { HeroArt, CardBanner } from "@/components/marketing/illustrations";
+import {
+  ShieldCheck,
+  Building2,
+  Bitcoin,
+  Scale,
+  UserCheck,
+  Lock,
+  ArrowRight,
+  Phone,
+  Mail,
+  MapPin,
+  CheckCircle2,
+} from "lucide-react";
 
 export default function Home() {
   return (
     <>
       <SiteHeader />
       <main className="flex-1">
-        <section className="relative overflow-hidden border-b border-border-soft bg-navy-900">
-          <div
-            className="absolute inset-0 opacity-40"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 15% 20%, rgba(176,141,87,0.25), transparent 45%), radial-gradient(circle at 85% 75%, rgba(19,31,69,0.6), transparent 50%), linear-gradient(135deg, #0b1530 0%, #060b1c 60%, #131f45 100%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 opacity-[0.06]"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px)",
-              backgroundSize: "48px 48px",
-            }}
-          />
-          <div className="relative mx-auto max-w-7xl px-6 py-24">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-wide text-gold">
-                Trusted · Secure · Professional
-              </p>
-              <h1 className="mt-4 text-4xl font-semibold tracking-tight text-white md:text-5xl">
-                Two Escrow Services. One Standard of Trust.
+        {/* Hero */}
+        <section className="relative overflow-hidden bg-white">
+          <div className="pointer-events-none absolute -right-40 -top-40 h-96 w-96 rounded-full bg-gold-tint blur-3xl" />
+          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
+            <div>
+              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold-tint px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold">
+                <ShieldCheck className="h-3.5 w-3.5" /> Licensed · Bonded · Insured
+              </span>
+              <h1 className="mt-5 font-serif text-5xl font-bold leading-[1.05] tracking-tight text-navy md:text-6xl">
+                Two Escrow Services.
+                <br />
+                One Standard of Trust.
               </h1>
-              <p className="mt-5 text-lg text-white/70">
-                Broker&apos;s Title &amp; Escrow, LLC provides secure escrow solutions for
-                real estate transactions and cryptocurrency deals.
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-600">
+                Broker&apos;s Title &amp; Escrow, LLC provides secure oversight of high-value
+                real estate closings and cryptocurrency transactions — every dollar reviewed
+                by hand, backed by professional escrow and compliance review.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/real-estate-escrow"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-navy px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] transition-colors hover:bg-navy-light"
+                >
+                  <Building2 className="h-4 w-4" /> Real Estate Escrow
+                </Link>
+                <Link
+                  href="/crypto-escrow"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-gold px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] transition-opacity hover:opacity-90"
+                >
+                  <Bitcoin className="h-4 w-4" /> Crypto Escrow
+                </Link>
+              </div>
+              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Manual oversight</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> KYC / AML verified</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Audit logged</span>
+              </div>
+            </div>
+            <div className="relative">
+              <HeroArt className="w-full drop-shadow-[0_24px_60px_rgba(11,21,48,0.25)]" />
+            </div>
+          </div>
+        </section>
+
+        {/* Feature strip */}
+        <section className="border-y border-border-soft bg-background">
+          <div className="mx-auto grid max-w-7xl gap-px overflow-hidden px-6 py-12 sm:grid-cols-2 lg:grid-cols-4">
+            <FeatureStripItem icon={<ShieldCheck className="h-5 w-5" />} title="Manual Oversight" desc="Staff review every release" />
+            <FeatureStripItem icon={<Lock className="h-5 w-5" />} title="Secure Transactions" desc="Funds held in protected escrow" />
+            <FeatureStripItem icon={<UserCheck className="h-5 w-5" />} title="KYC / AML SOC" desc="Identity verified above $100" />
+            <FeatureStripItem icon={<Scale className="h-5 w-5" />} title="Dispute Mediation" desc="Impartial resolution support" />
+          </div>
+        </section>
+
+        {/* Service cards */}
+        <section className="bg-white py-20">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-2xl text-center">
+              <h2 className="font-serif text-3xl font-bold text-navy">Choose Your Escrow Service</h2>
+              <p className="mt-3 text-gray-600">
+                Purpose-built workflows for two very different transactions, held to the same
+                standard of manual, professional oversight.
               </p>
             </div>
-            <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              <HeroFeature icon={<ShieldCheck className="h-5 w-5 text-gold" />} title="Secure &amp; Compliant" desc="Bonded &amp; insured" />
-              <HeroFeature icon={<FileCheck2 className="h-5 w-5 text-gold" />} title="Expert Support" desc="Real people, reviewed by hand" />
-              <HeroFeature icon={<Globe2 className="h-5 w-5 text-gold" />} title="Manual Oversight" desc="Every dollar reviewed by staff" />
-            </div>
-          </div>
-        </section>
-
-        <section className="bg-background py-20">
-          <div className="mx-auto max-w-7xl px-6">
-            <h2 className="text-center text-2xl font-semibold text-navy">
-              What type of escrow are you looking for?
-            </h2>
             <div className="mt-12 grid gap-8 md:grid-cols-2">
-              <PathCard
+              <ServiceCard
                 href="/real-estate-escrow"
-                icon={<FileLock2 className="h-6 w-6 text-navy" />}
+                banner={<CardBanner icon={<Building2 className="h-8 w-8" />} />}
                 title="Real Estate Escrow"
-                desc="Secure closings for residential and commercial real estate."
-                points={["Residential & Commercial Closings", "Title Insurance", "Experienced Escrow Officers"]}
+                desc="Secure closings for residential and commercial property transactions."
+                points={[
+                  "Residential & commercial closings",
+                  "Title insurance coordination",
+                  "Earnest money & settlement holds",
+                  "Experienced escrow officers",
+                ]}
                 cta="Enter Real Estate Escrow"
+                ctaTone="navy"
               />
-              <PathCard
+              <ServiceCard
                 href="/crypto-escrow"
-                icon={<Wallet className="h-6 w-6 text-navy" />}
+                banner={<CardBanner tone="gold" icon={<Bitcoin className="h-8 w-8" />} />}
                 title="Crypto Escrow"
-                desc="Buyer-seller protected cryptocurrency exchange with manual review."
-                points={["Bitcoin, Ethereum, USDT & more", "Buyer-Seller Verification", "Secure Manual Release"]}
+                desc="Buyer-and-seller protected cryptocurrency exchange with manual review."
+                points={[
+                  "Bitcoin, Ethereum, USDT & more",
+                  "Buyer–seller identity verification",
+                  "On-chain deposit confirmation",
+                  "Secure, manual fund release",
+                ]}
                 cta="Enter Crypto Escrow"
-                highlight
+                ctaTone="gold"
               />
             </div>
           </div>
         </section>
 
-        <section id="compliance" className="border-t border-border-soft bg-white py-12">
+        {/* Compliance band */}
+        <section id="compliance" className="border-t border-border-soft bg-background py-16">
           <div className="mx-auto grid max-w-7xl gap-8 px-6 sm:grid-cols-3">
-            <Feature icon={<UserCheck className="h-5 w-5 text-gold" />} title="KYC Verified" desc="Identity verification above $100" />
-            <Feature icon={<ShieldCheck className="h-5 w-5 text-gold" />} title="Licensed &amp; Bonded" desc="Regulated escrow operator" />
-            <Feature icon={<FileCheck2 className="h-5 w-5 text-gold" />} title="Audit Logged" desc="Every admin action recorded" />
+            <Compliance icon={<UserCheck className="h-5 w-5 text-gold" />} title="KYC Verified" desc="Identity verification required on transactions above $100." />
+            <Compliance icon={<ShieldCheck className="h-5 w-5 text-gold" />} title="Licensed & Bonded" desc="Operating as a regulated, bonded escrow provider." />
+            <Compliance icon={<Lock className="h-5 w-5 text-gold" />} title="Audit Logged" desc="Every administrative action is recorded and reviewable." />
+          </div>
+        </section>
+
+        {/* Contact */}
+        <section id="contact" className="bg-navy-900 py-16 text-white">
+          <div className="mx-auto grid max-w-7xl gap-10 px-6 md:grid-cols-2">
+            <div>
+              <h2 className="font-serif text-3xl font-bold">Speak with an escrow officer</h2>
+              <p className="mt-3 max-w-md text-white/70">
+                Have a transaction in progress or a question about getting started? Our team
+                reviews every escrow personally.
+              </p>
+              <div className="mt-8 space-y-4 text-sm">
+                <ContactRow icon={<Phone className="h-4 w-4 text-gold" />} text="(800) 555-0134" />
+                <ContactRow icon={<Mail className="h-4 w-4 text-gold" />} text="support@brokerstitleescrow.com" />
+                <ContactRow icon={<MapPin className="h-4 w-4 text-gold" />} text="2025 Main Street, Suite 5, Phoenix, AZ 85004" />
+              </div>
+            </div>
+            <div className="flex flex-col justify-center rounded-2xl border border-white/10 bg-white/5 p-8">
+              <h3 className="font-serif text-xl font-semibold">Ready to open an escrow?</h3>
+              <p className="mt-2 text-sm text-white/70">
+                Create your account and start a real estate or crypto escrow in minutes.
+              </p>
+              <Link
+                href="/register"
+                className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-gold px-6 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                Create Escrow <ArrowRight className="h-4 w-4" />
+              </Link>
+            </div>
           </div>
         </section>
       </main>
@@ -85,76 +162,79 @@ export default function Home() {
   );
 }
 
-function Feature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+function FeatureStripItem({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div className="flex items-start gap-3">
-      <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-navy/5">{icon}</span>
+    <div className="flex items-start gap-3 px-4">
+      <span className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-navy/5 text-navy">{icon}</span>
       <div>
-        <div className="text-sm font-semibold text-gray-900">{title}</div>
+        <div className="text-sm font-semibold text-navy">{title}</div>
         <div className="text-sm text-gray-500">{desc}</div>
       </div>
     </div>
   );
 }
 
-function HeroFeature({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
+function ServiceCard({
+  href,
+  banner,
+  title,
+  desc,
+  points,
+  cta,
+  ctaTone,
+}: {
+  href: string;
+  banner: React.ReactNode;
+  title: string;
+  desc: string;
+  points: string[];
+  cta: string;
+  ctaTone: "navy" | "gold";
+}) {
   return (
-    <div className="flex items-start gap-3 rounded-xl border border-white/10 bg-white/5 p-4 backdrop-blur-sm">
-      <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-white/10">{icon}</span>
-      <div>
-        <div className="text-sm font-semibold text-white">{title}</div>
-        <div className="text-sm text-white/60">{desc}</div>
+    <div className="flex flex-col overflow-hidden rounded-2xl border border-border-soft bg-white shadow-[var(--shadow-card)]">
+      {banner}
+      <div className="flex flex-1 flex-col p-8">
+        <h3 className="font-serif text-2xl font-bold text-navy">{title}</h3>
+        <p className="mt-2 text-sm text-gray-500">{desc}</p>
+        <ul className="mt-5 space-y-2.5 text-sm text-gray-600">
+          {points.map((p) => (
+            <li key={p} className="flex items-center gap-2.5">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-gold" />
+              {p}
+            </li>
+          ))}
+        </ul>
+        <Link
+          href={href}
+          className={`mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 ${
+            ctaTone === "gold" ? "bg-gold" : "bg-navy"
+          }`}
+        >
+          {cta} <ArrowRight className="h-4 w-4" />
+        </Link>
       </div>
     </div>
   );
 }
 
-function PathCard({
-  href,
-  icon,
-  title,
-  desc,
-  points,
-  cta,
-  highlight,
-}: {
-  href: string;
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-  points: string[];
-  cta: string;
-  highlight?: boolean;
-}) {
+function Compliance({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
-    <div
-      className={`flex flex-col rounded-2xl border p-8 transition-shadow ${
-        highlight
-          ? "border-navy bg-navy text-white shadow-[var(--shadow-card)]"
-          : "border-border-soft bg-white shadow-[var(--shadow-card)]"
-      }`}
-    >
-      <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${highlight ? "bg-white/10" : "bg-gold-tint"}`}>
-        {icon}
-      </span>
-      <h3 className={`mt-5 text-xl font-semibold ${highlight ? "text-white" : "text-navy"}`}>{title}</h3>
-      <p className={`mt-2 text-sm ${highlight ? "text-white/70" : "text-gray-500"}`}>{desc}</p>
-      <ul className={`mt-5 space-y-2 text-sm ${highlight ? "text-white/80" : "text-gray-600"}`}>
-        {points.map((p) => (
-          <li key={p} className="flex items-center gap-2">
-            <span className={`h-1.5 w-1.5 rounded-full ${highlight ? "bg-gold" : "bg-navy"}`} />
-            {p}
-          </li>
-        ))}
-      </ul>
-      <Link
-        href={href}
-        className={`mt-8 inline-flex h-11 items-center justify-center rounded-lg text-sm font-medium ${
-          highlight ? "bg-gold text-white hover:opacity-90" : "bg-navy text-white hover:bg-navy-light"
-        }`}
-      >
-        {cta}
-      </Link>
+    <div className="flex items-start gap-3">
+      <span className="mt-0.5 flex h-9 w-9 items-center justify-center rounded-full bg-gold-tint">{icon}</span>
+      <div>
+        <div className="text-sm font-semibold text-navy">{title}</div>
+        <div className="text-sm text-gray-500">{desc}</div>
+      </div>
+    </div>
+  );
+}
+
+function ContactRow({ icon, text }: { icon: React.ReactNode; text: string }) {
+  return (
+    <div className="flex items-center gap-3">
+      <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/5">{icon}</span>
+      {text}
     </div>
   );
 }
