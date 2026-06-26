@@ -37,6 +37,7 @@ export interface Profile {
   is_verified: boolean;
   kyc_status: KycStatus;
   risk_flags: string[];
+  two_factor_enabled: boolean;
   created_at: string;
   updated_at: string;
   last_login_at: string | null;

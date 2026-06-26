@@ -2,8 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatDate, initials } from "@/lib/utils";
-import { sendMessageAction } from "@/lib/data/contracts";
-import type { ContractMessage, MessageType } from "@/lib/supabase/types";
+import type { MessageType } from "@/lib/supabase/types";
 
 const ROLE_TONE: Record<MessageType, "blue" | "green" | "navy" | "purple" | "amber" | "neutral"> = {
   buyer: "blue",
@@ -14,17 +13,22 @@ const ROLE_TONE: Record<MessageType, "blue" | "green" | "navy" | "purple" | "amb
   system: "neutral",
 };
 
-type SendableMessageType = "buyer" | "seller" | "admin" | "mediator" | "compliance";
+export interface ChatMessage {
+  id: string;
+  sender_id: string | null;
+  message_type: MessageType;
+  body: string;
+  is_official: boolean;
+  created_at: string;
+}
 
 export function ContractChat({
-  contractId,
   messages,
-  senderType,
+  onSend,
   names,
 }: {
-  contractId: string;
-  messages: ContractMessage[];
-  senderType: SendableMessageType | null;
+  messages: ChatMessage[];
+  onSend: ((formData: FormData) => Promise<void>) | null;
   names: Record<string, string>;
 }) {
   return (
@@ -52,12 +56,9 @@ export function ContractChat({
           </div>
         ))}
       </div>
-      {senderType && (
+      {onSend && (
         <form
-          action={async (formData) => {
-            "use server";
-            await sendMessageAction(contractId, senderType, formData);
-          }}
+          action={onSend}
           className="flex items-end gap-2 border-t border-border-soft p-4"
         >
           <Textarea name="body" rows={2} placeholder="Write a message…" required className="flex-1" />

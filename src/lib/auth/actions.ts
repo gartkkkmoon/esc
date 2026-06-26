@@ -44,7 +44,18 @@ export async function signUpAction(formData: FormData) {
     redirect(`/register?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect("/login?registered=1");
+  redirect(`/verify-email?email=${encodeURIComponent(email)}`);
+}
+
+export async function resendVerificationEmailAction(formData: FormData) {
+  const email = String(formData.get("email") ?? "");
+  const supabase = await createClient();
+  await supabase.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback` },
+  });
+  redirect(`/verify-email?email=${encodeURIComponent(email)}&sent=1`);
 }
 
 export async function signOutAction() {

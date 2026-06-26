@@ -23,6 +23,17 @@ export default async function AdminKycQueuePage() {
     : { data: [] };
   const userOf = (id: string) => users?.find((u) => u.id === id);
 
+  const docPaths = (submissions ?? [])
+    .flatMap((s) => [s.id_document_url, s.passport_url, s.proof_of_address_url, s.selfie_url, s.liveness_check_url])
+    .filter((p): p is string => !!p);
+  const signedUrlOf = new Map<string, string>();
+  if (docPaths.length) {
+    const { data: signed } = await supabase.storage.from("kyc-documents").createSignedUrls(docPaths, 60 * 10);
+    signed?.forEach((s, i) => {
+      if (s.signedUrl) signedUrlOf.set(docPaths[i], s.signedUrl);
+    });
+  }
+
   return (
     <>
       <PageHeader title="KYC Review Queue" description="Manually approve or reject submitted identity documents." />
@@ -37,11 +48,11 @@ export default async function AdminKycQueuePage() {
               </CardHeader>
               <CardContent className="grid gap-4 lg:grid-cols-3">
                 <div className="space-y-2 text-sm lg:col-span-2">
-                  <Doc label="Government ID" url={s.id_document_url} />
-                  <Doc label="Passport / National ID" url={s.passport_url} />
-                  <Doc label="Proof of Address" url={s.proof_of_address_url} />
-                  <Doc label="Selfie" url={s.selfie_url} />
-                  <Doc label="Liveness Check" url={s.liveness_check_url} />
+                  <Doc label="Government ID" url={s.id_document_url ? signedUrlOf.get(s.id_document_url) ?? null : null} />
+                  <Doc label="Passport / National ID" url={s.passport_url ? signedUrlOf.get(s.passport_url) ?? null : null} />
+                  <Doc label="Proof of Address" url={s.proof_of_address_url ? signedUrlOf.get(s.proof_of_address_url) ?? null : null} />
+                  <Doc label="Selfie" url={s.selfie_url ? signedUrlOf.get(s.selfie_url) ?? null : null} />
+                  <Doc label="Liveness Check" url={s.liveness_check_url ? signedUrlOf.get(s.liveness_check_url) ?? null : null} />
                   <p className="text-xs text-gray-400">Submitted {formatDate(s.submitted_at)}</p>
                   {s.compliance_notes && <p className="text-xs text-amber-700">Notes: {s.compliance_notes}</p>}
                 </div>

@@ -11,6 +11,7 @@ import { formatUsd, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { addInternalNoteAction, editContractAction } from "@/lib/data/admin-actions";
+import { sendMessageAction } from "@/lib/data/contracts";
 
 export default async function AdminContractDetailPage({
   params,
@@ -96,7 +97,7 @@ export default async function AdminContractDetailPage({
 
           <Card>
             <CardHeader><CardTitle>Buyer / Seller Chat — Admin Can Join</CardTitle></CardHeader>
-            <ContractChat contractId={contract.id} messages={messages ?? []} senderType="admin" names={names} />
+            <ContractChat messages={messages ?? []} onSend={sendMessageAction.bind(null, contract.id, "admin")} names={names} />
           </Card>
 
           <Card>

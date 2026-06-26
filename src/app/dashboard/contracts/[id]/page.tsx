@@ -15,6 +15,7 @@ import {
   requestReleaseAction,
   openDisputeAction,
   submitPaymentHashAction,
+  sendMessageAction,
 } from "@/lib/data/contracts";
 
 export default async function ContractDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -134,9 +135,8 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
           <Card>
             <CardHeader><CardTitle>Messages</CardTitle></CardHeader>
             <ContractChat
-              contractId={contract.id}
               messages={messages ?? []}
-              senderType={isBuyer ? "buyer" : "seller"}
+              onSend={sendMessageAction.bind(null, contract.id, isBuyer ? "buyer" : "seller")}
               names={names}
             />
           </Card>

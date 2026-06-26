@@ -8,7 +8,7 @@ import { ContractChat } from "@/components/contract/contract-chat";
 import { formatDate, formatUsd } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
-import { proposeSettlementAction, closeDisputeAction } from "@/lib/data/disputes";
+import { proposeSettlementAction, closeDisputeAction, sendDisputeMessageAction } from "@/lib/data/disputes";
 
 export default async function AdminDisputeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -21,9 +21,9 @@ export default async function AdminDisputeDetailPage({ params }: { params: Promi
   const [{ data: contract }, { data: messages }, { data: proposals }] = await Promise.all([
     supabase.from("escrow_contracts").select("*").eq("id", dispute.contract_id).single(),
     supabase
-      .from("contract_messages")
+      .from("dispute_messages")
       .select("*")
-      .eq("contract_id", dispute.contract_id)
+      .eq("dispute_id", id)
       .order("created_at", { ascending: true }),
     supabase.from("settlement_proposals").select("*").eq("dispute_id", id).order("created_at", { ascending: false }),
   ]);
@@ -46,7 +46,7 @@ export default async function AdminDisputeDetailPage({ params }: { params: Promi
 
           <Card>
             <CardHeader><CardTitle>Mediation Chat</CardTitle></CardHeader>
-            <ContractChat contractId={contract!.id} messages={messages ?? []} senderType="mediator" names={names} />
+            <ContractChat messages={messages ?? []} onSend={sendDisputeMessageAction.bind(null, dispute.id, "mediator")} names={names} />
           </Card>
 
           <Card>

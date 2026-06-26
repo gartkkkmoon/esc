@@ -62,14 +62,14 @@ export default async function KycPage() {
             )}
 
             {(status === "required" || status === "rejected" || status === "needs_more_info" || status === "not_required") && (
-              <form action={submitKycAction} className="space-y-4 border-t border-border-soft pt-4">
-                <FieldGroup icon={<IdCard className="h-4 w-4" />} label="Government ID / Driver's License URL" name="id_document_url" />
-                <FieldGroup icon={<FileText className="h-4 w-4" />} label="Passport or National ID URL (optional)" name="passport_url" />
-                <FieldGroup icon={<FileText className="h-4 w-4" />} label="Proof of Address URL" name="proof_of_address_url" />
-                <FieldGroup icon={<ScanFace className="h-4 w-4" />} label="Selfie URL" name="selfie_url" />
-                <FieldGroup icon={<ScanFace className="h-4 w-4" />} label="Liveness Check / Video URL" name="liveness_check_url" />
+              <form action={submitKycAction} encType="multipart/form-data" className="space-y-4 border-t border-border-soft pt-4">
+                <FieldGroup icon={<IdCard className="h-4 w-4" />} label="Government ID / Driver's License" name="id_document" />
+                <FieldGroup icon={<FileText className="h-4 w-4" />} label="Passport or National ID (optional)" name="passport" />
+                <FieldGroup icon={<FileText className="h-4 w-4" />} label="Proof of Address" name="proof_of_address" />
+                <FieldGroup icon={<ScanFace className="h-4 w-4" />} label="Selfie" name="selfie" />
+                <FieldGroup icon={<ScanFace className="h-4 w-4" />} label="Liveness Check / Video" name="liveness_check" />
                 <p className="text-xs text-gray-400">
-                  Document upload storage integration is a placeholder for MVP — paste a secure file URL for each item. All submissions are reviewed manually by compliance staff.
+                  Files are uploaded to a private, access-controlled storage bucket and are only viewable by you and compliance staff. All submissions are reviewed manually.
                 </p>
                 <Button type="submit" className="w-full">Submit for Manual Review</Button>
               </form>
@@ -85,7 +85,7 @@ function FieldGroup({ icon, label, name }: { icon: React.ReactNode; label: strin
   return (
     <div>
       <Label htmlFor={name} className="flex items-center gap-2">{icon}{label}</Label>
-      <Input id={name} name={name} placeholder="https://…" />
+      <Input id={name} name={name} type="file" accept="image/*,.pdf" />
     </div>
   );
 }
