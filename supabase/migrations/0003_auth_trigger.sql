@@ -1,12 +1,12 @@
 -- Auto-create a profile + default buyer role whenever a new auth user signs up.
 
 create or replace function handle_new_user()
-returns trigger language plpgsql security definer as $$
+returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  insert into profiles (id, full_name, email)
+  insert into public.profiles (id, full_name, email)
   values (new.id, coalesce(new.raw_user_meta_data->>'full_name', ''), new.email);
 
-  insert into user_roles (user_id, role) values (new.id, 'buyer');
+  insert into public.user_roles (user_id, role) values (new.id, 'buyer');
 
   return new;
 end;
