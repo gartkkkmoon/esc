@@ -5,8 +5,11 @@
   --foreground: #0f172a;
   --navy: #0b1530;
   --navy-light: #131f45;
+  --navy-900: #060b1c;
   --gold: #b08d57;
+  --gold-tint: #f7eee0;
   --border-soft: #e6e8ec;
+  --shadow-card: 0 1px 2px rgba(11, 21, 48, 0.04), 0 8px 24px rgba(11, 21, 48, 0.06);
 }
 
 @theme inline {
@@ -14,8 +17,11 @@
   --color-foreground: var(--foreground);
   --color-navy: var(--navy);
   --color-navy-light: var(--navy-light);
+  --color-navy-900: var(--navy-900);
   --color-gold: var(--gold);
+  --color-gold-tint: var(--gold-tint);
   --color-border-soft: var(--border-soft);
+  --shadow-card: var(--shadow-card);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }

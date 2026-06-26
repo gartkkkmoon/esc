@@ -15,6 +15,7 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-8 text-sm font-medium text-gray-600 md:flex">
           <Link href="/real-estate-escrow" className="hover:text-navy">Real Estate</Link>
           <Link href="/crypto-escrow" className="hover:text-navy">Crypto Escrow</Link>
+          <Link href="/crypto-escrow#how-it-works" className="hover:text-navy">How It Works</Link>
           <Link href="/#compliance" className="hover:text-navy">Compliance</Link>
         </nav>
         <div className="flex items-center gap-3">
