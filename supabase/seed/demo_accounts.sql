@@ -1,9 +1,12 @@
--- Demo accounts: admin@escrow.it (admin) and user@escrow.it (seller, completed history).
+-- Demo accounts for manual walkthrough testing.
 --
--- Prerequisite: create both auth users first via Supabase dashboard
--- (Authentication -> Users -> Add User), with "Auto Confirm User" checked:
---   admin@escrow.it / 12345
---   user@escrow.it  / 12345
+-- Prerequisite: create all four auth users first via Supabase dashboard
+-- (Authentication -> Users -> Add User), with "Auto Confirm User" checked,
+-- all with password 1234567890:
+--   admin@escrow.it
+--   buyer@escrow.it
+--   seller@escrow.it
+--   nokyc@escrow.it
 --
 -- Then run this script in the SQL Editor. It looks up the UUIDs by email,
 -- so no manual ID copying is required.
@@ -11,51 +14,67 @@
 do $$
 declare
   admin_id uuid;
+  buyer_id uuid;
   seller_id uuid;
-  buyer_id uuid := gen_random_uuid();
+  nokyc_id uuid;
   contract_1 uuid := gen_random_uuid();
   contract_2 uuid := gen_random_uuid();
 begin
   select id into admin_id from auth.users where email = 'admin@escrow.it';
-  select id into seller_id from auth.users where email = 'user@escrow.it';
+  select id into buyer_id from auth.users where email = 'buyer@escrow.it';
+  select id into seller_id from auth.users where email = 'seller@escrow.it';
+  select id into nokyc_id from auth.users where email = 'nokyc@escrow.it';
 
   if admin_id is null then
     raise exception 'auth user admin@escrow.it not found - create it in the Supabase dashboard first';
   end if;
+  if buyer_id is null then
+    raise exception 'auth user buyer@escrow.it not found - create it in the Supabase dashboard first';
+  end if;
   if seller_id is null then
-    raise exception 'auth user user@escrow.it not found - create it in the Supabase dashboard first';
+    raise exception 'auth user seller@escrow.it not found - create it in the Supabase dashboard first';
+  end if;
+  if nokyc_id is null then
+    raise exception 'auth user nokyc@escrow.it not found - create it in the Supabase dashboard first';
   end if;
 
-  -- Admin profile + role
+  -- Admin: admin role, verified, KYC approved
   update public.profiles
     set full_name = 'Site Administrator', is_verified = true, account_status = 'active', kyc_status = 'approved'
     where id = admin_id;
   insert into public.user_roles (user_id, role) values (admin_id, 'admin') on conflict do nothing;
 
-  -- Seller profile: fully verified, KYC approved
+  -- Buyer: verified, KYC approved (buyer role already granted by the signup trigger)
+  update public.profiles
+    set full_name = 'Morgan Buyer', is_verified = true, account_status = 'active', kyc_status = 'approved'
+    where id = buyer_id;
+  insert into public.user_roles (user_id, role) values (buyer_id, 'buyer') on conflict do nothing;
+
+  -- Seller: verified, KYC approved, explicit seller role
   update public.profiles
     set full_name = 'Jordan Seller', is_verified = true, account_status = 'active', kyc_status = 'approved'
     where id = seller_id;
+  insert into public.user_roles (user_id, role) values (seller_id, 'seller') on conflict do nothing;
 
-  -- Mock buyer profile to pair against the completed contracts (not a real login)
-  insert into public.profiles (id, full_name, email, is_verified, account_status, kyc_status)
-  values (buyer_id, 'Morgan Buyer', 'morgan.buyer@example.com', true, 'active', 'approved')
-  on conflict (id) do nothing;
+  -- No-KYC account: verified login, but KYC intentionally not completed
+  update public.profiles
+    set full_name = 'No KYC Test User', is_verified = true, account_status = 'active', kyc_status = 'required'
+    where id = nokyc_id;
+  insert into public.user_roles (user_id, role) values (nokyc_id, 'buyer') on conflict do nothing;
 
-  -- KYC submission, fully approved with mock document references
+  -- Approved KYC submissions for buyer and seller
   insert into public.kyc_submissions (
     user_id, status, id_document_url, proof_of_address_url, selfie_url,
     compliance_notes, reviewed_by, reviewed_at
-  ) values (
-    seller_id, 'approved',
-    seller_id::text || '/id-document-mock.jpg',
-    seller_id::text || '/proof-of-address-mock.jpg',
-    seller_id::text || '/selfie-mock.jpg',
-    'Identity and address verified. Approved for full platform access.',
-    admin_id, now() - interval '20 days'
-  );
+  ) values
+    (buyer_id, 'approved', buyer_id::text || '/id-document-mock.jpg',
+      buyer_id::text || '/proof-of-address-mock.jpg', buyer_id::text || '/selfie-mock.jpg',
+      'Identity and address verified.', admin_id, now() - interval '20 days'),
+    (seller_id, 'approved', seller_id::text || '/id-document-mock.jpg',
+      seller_id::text || '/proof-of-address-mock.jpg', seller_id::text || '/selfie-mock.jpg',
+      'Identity and address verified.', admin_id, now() - interval '20 days');
 
-  -- Completed contract #1: crypto sale, fully released
+  -- Completed contract #1: crypto sale, fully released, between buyer@escrow.it and seller@escrow.it
   insert into public.escrow_contracts (
     id, buyer_id, seller_id, title, description, contract_type, crypto_asset,
     amount_crypto, amount_usd, status, payment_status, kyc_requirement,
@@ -104,5 +123,6 @@ begin
     (admin_id, 'admin', 'mark_complete', 'escrow_contract', contract_1, 'All conditions satisfied; closing out contract.'),
     (admin_id, 'admin', 'release_funds', 'escrow_contract', contract_2, 'Closing confirmed by title company; earnest money released to seller.'),
     (admin_id, 'admin', 'mark_complete', 'escrow_contract', contract_2, 'Transaction closed successfully.'),
+    (admin_id, 'admin', 'approve_kyc', 'profile', buyer_id, 'Identity and proof of address documents verified.'),
     (admin_id, 'admin', 'approve_kyc', 'profile', seller_id, 'Identity and proof of address documents verified.');
 end $$;
