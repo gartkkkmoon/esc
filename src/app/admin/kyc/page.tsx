@@ -2,11 +2,13 @@ import Link from "next/link";
 import { PageHeader } from "@/components/layout/dashboard-shell";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/badge";
+import { StatCard } from "@/components/dashboard/stat-card";
 import { AdminActionButton } from "@/components/admin/action-button";
 import { formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
 import { performUserActionAction } from "@/lib/data/admin-users";
+import { FileImage, Clock4, ShieldCheck, XCircle } from "lucide-react";
 
 export default async function AdminKycQueuePage() {
   await requireAdmin();
@@ -34,12 +36,31 @@ export default async function AdminKycQueuePage() {
     });
   }
 
+  const all = submissions ?? [];
+  const pendingCount = all.filter((s) => s.status === "pending").length;
+  const approvedCount = all.filter((s) => s.status === "approved").length;
+  const rejectedCount = all.filter((s) => s.status === "rejected").length;
+
   return (
     <>
-      <PageHeader title="KYC Review Queue" description="Manually approve or reject submitted identity documents." />
-      <div className="grid gap-4 p-6">
-        {(submissions ?? []).map((s) => {
+      <PageHeader title="Compliance Dashboard" description="Manually approve or reject submitted identity documents." />
+
+      <div className="grid gap-4 p-6 sm:grid-cols-3">
+        <StatCard label="Pending Review" value={String(pendingCount)} icon={<Clock4 className="h-5 w-5" />} tone="amber" />
+        <StatCard label="Approved" value={String(approvedCount)} icon={<ShieldCheck className="h-5 w-5" />} tone="green" />
+        <StatCard label="Rejected" value={String(rejectedCount)} icon={<XCircle className="h-5 w-5" />} tone="red" />
+      </div>
+
+      <div className="grid gap-4 p-6 pt-0">
+        {all.map((s) => {
           const user = userOf(s.user_id);
+          const docs = [
+            { label: "Government ID", url: s.id_document_url ? signedUrlOf.get(s.id_document_url) ?? null : null },
+            { label: "Passport / National ID", url: s.passport_url ? signedUrlOf.get(s.passport_url) ?? null : null },
+            { label: "Proof of Address", url: s.proof_of_address_url ? signedUrlOf.get(s.proof_of_address_url) ?? null : null },
+            { label: "Selfie", url: s.selfie_url ? signedUrlOf.get(s.selfie_url) ?? null : null },
+            { label: "Liveness Check", url: s.liveness_check_url ? signedUrlOf.get(s.liveness_check_url) ?? null : null },
+          ];
           return (
             <Card key={s.id}>
               <CardHeader className="flex items-center justify-between">
@@ -47,12 +68,12 @@ export default async function AdminKycQueuePage() {
                 <StatusBadge status={s.status} />
               </CardHeader>
               <CardContent className="grid gap-4 lg:grid-cols-3">
-                <div className="space-y-2 text-sm lg:col-span-2">
-                  <Doc label="Government ID" url={s.id_document_url ? signedUrlOf.get(s.id_document_url) ?? null : null} />
-                  <Doc label="Passport / National ID" url={s.passport_url ? signedUrlOf.get(s.passport_url) ?? null : null} />
-                  <Doc label="Proof of Address" url={s.proof_of_address_url ? signedUrlOf.get(s.proof_of_address_url) ?? null : null} />
-                  <Doc label="Selfie" url={s.selfie_url ? signedUrlOf.get(s.selfie_url) ?? null : null} />
-                  <Doc label="Liveness Check" url={s.liveness_check_url ? signedUrlOf.get(s.liveness_check_url) ?? null : null} />
+                <div className="space-y-3 lg:col-span-2">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                    {docs.map((d) => (
+                      <DocThumbnail key={d.label} label={d.label} url={d.url} />
+                    ))}
+                  </div>
                   <p className="text-xs text-gray-400">Submitted {formatDate(s.submitted_at)}</p>
                   {s.compliance_notes && <p className="text-xs text-amber-700">Notes: {s.compliance_notes}</p>}
                 </div>
@@ -66,21 +87,29 @@ export default async function AdminKycQueuePage() {
             </Card>
           );
         })}
-        {(submissions ?? []).length === 0 && <p className="text-sm text-gray-400">No KYC submissions yet.</p>}
+        {all.length === 0 && <p className="text-sm text-gray-400">No KYC submissions yet.</p>}
       </div>
     </>
   );
 }
 
-function Doc({ label, url }: { label: string; url: string | null }) {
+function DocThumbnail({ label, url }: { label: string; url: string | null }) {
   return (
-    <div className="flex items-center justify-between rounded-lg border border-border-soft px-3 py-2">
-      <span className="text-gray-500">{label}</span>
-      {url ? (
-        <a href={url} target="_blank" rel="noreferrer" className="font-medium text-navy underline">View</a>
-      ) : (
-        <span className="text-gray-300">Not submitted</span>
-      )}
-    </div>
+    <a
+      href={url ?? undefined}
+      target={url ? "_blank" : undefined}
+      rel={url ? "noreferrer" : undefined}
+      className={`flex flex-col gap-2 rounded-lg border p-2 text-center ${
+        url ? "border-border-soft hover:bg-gray-50" : "border-dashed border-border-soft opacity-60"
+      }`}
+    >
+      <div className="flex h-16 items-center justify-center rounded-md bg-gray-50">
+        <FileImage className={`h-6 w-6 ${url ? "text-navy" : "text-gray-300"}`} />
+      </div>
+      <span className="text-xs font-medium text-gray-700">{label}</span>
+      <span className={`text-xs ${url ? "font-medium text-navy underline" : "text-gray-300"}`}>
+        {url ? "View" : "Not submitted"}
+      </span>
+    </a>
   );
 }
