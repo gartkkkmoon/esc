@@ -2,9 +2,12 @@ import Link from "next/link";
 import { PageHeader } from "@/components/layout/dashboard-shell";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/badge";
+import { StatCard } from "@/components/dashboard/stat-card";
+import { ActionCenter } from "@/components/dashboard/action-center";
 import { formatUsd, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
+import { FileStack, DollarSign, Clock4, AlertTriangle, ShieldAlert, CheckCircle2, Wallet, Activity } from "lucide-react";
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
@@ -37,19 +40,19 @@ export default async function AdminDashboardPage() {
     <>
       <PageHeader title="Admin Dashboard" description="Platform-wide overview and manual review queue." />
       <div className="grid gap-4 p-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Stat label="Total Escrow Contracts" value={String(list.length)} />
-        <Stat label="Total Volume" value={formatUsd(totalVolume)} />
-        <Stat label="Pending Review" value={String(pendingReview)} tone="amber" />
-        <Stat label="Disputes Open" value={String(disputesOpen?.length ?? 0)} tone="red" />
-        <Stat label="KYC Pending" value={String(kycPending?.length ?? 0)} tone="amber" />
-        <Stat label="Completed This Month" value={String(completedThisMonth)} tone="green" />
-        <Stat label="Total Escrow Balance Held" value={formatUsd(escrowBalance)} />
-        <Stat label="Active Contracts" value={String(list.filter((c) => !["completed", "cancelled", "closed", "refunded"].includes(c.status)).length)} />
+        <StatCard label="Total Escrow Contracts" value={String(list.length)} icon={<FileStack className="h-5 w-5" />} />
+        <StatCard label="Total Volume" value={formatUsd(totalVolume)} icon={<DollarSign className="h-5 w-5" />} />
+        <StatCard label="Pending Review" value={String(pendingReview)} icon={<Clock4 className="h-5 w-5" />} tone="amber" />
+        <StatCard label="Disputes Open" value={String(disputesOpen?.length ?? 0)} icon={<AlertTriangle className="h-5 w-5" />} tone="red" />
+        <StatCard label="KYC Pending" value={String(kycPending?.length ?? 0)} icon={<ShieldAlert className="h-5 w-5" />} tone="amber" />
+        <StatCard label="Completed This Month" value={String(completedThisMonth)} icon={<CheckCircle2 className="h-5 w-5" />} tone="green" />
+        <StatCard label="Total Escrow Balance Held" value={formatUsd(escrowBalance)} icon={<Wallet className="h-5 w-5" />} />
+        <StatCard label="Active Contracts" value={String(list.filter((c) => !["completed", "cancelled", "closed", "refunded"].includes(c.status)).length)} icon={<Activity className="h-5 w-5" />} />
       </div>
 
       <div className="grid gap-6 p-6 pt-0 lg:grid-cols-3">
         <Card className="lg:col-span-2">
-          <CardHeader><CardTitle>Recent Escrow Contracts</CardTitle></CardHeader>
+          <CardHeader><CardTitle>Recent Activity</CardTitle></CardHeader>
           <CardContent className="space-y-3">
             {recent.map((c) => (
               <Link
@@ -68,38 +71,15 @@ export default async function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader><CardTitle>Manual Action Alerts</CardTitle></CardHeader>
-          <CardContent className="space-y-3 text-sm">
-            <Alert label="KYC submissions awaiting review" count={kycPending?.length ?? 0} href="/admin/kyc" />
-            <Alert label="Contracts awaiting admin review" count={pendingReview} href="/admin/contracts" />
-            <Alert label="Open disputes" count={disputesOpen?.length ?? 0} href="/admin/disputes" />
-          </CardContent>
-        </Card>
+        <ActionCenter
+          title="Market Action Center"
+          items={[
+            { label: "KYC submissions awaiting review", count: kycPending?.length ?? 0, href: "/admin/kyc" },
+            { label: "Contracts awaiting admin review", count: pendingReview, href: "/admin/contracts" },
+            { label: "Open disputes", count: disputesOpen?.length ?? 0, href: "/admin/disputes" },
+          ]}
+        />
       </div>
     </>
-  );
-}
-
-function Stat({ label, value, tone }: { label: string; value: string; tone?: "amber" | "red" | "green" }) {
-  const toneClass = tone === "amber" ? "text-amber-600" : tone === "red" ? "text-red-600" : tone === "green" ? "text-emerald-600" : "text-gray-900";
-  return (
-    <Card>
-      <CardContent>
-        <div className="text-sm text-gray-500">{label}</div>
-        <div className={`mt-1 text-2xl font-semibold ${toneClass}`}>{value}</div>
-      </CardContent>
-    </Card>
-  );
-}
-
-function Alert({ label, count, href }: { label: string; count: number; href: string }) {
-  return (
-    <Link href={href} className="flex items-center justify-between rounded-lg bg-gray-50 px-3 py-2 hover:bg-gray-100">
-      <span className="text-gray-700">{label}</span>
-      <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${count > 0 ? "bg-amber-100 text-amber-800" : "bg-gray-200 text-gray-500"}`}>
-        {count}
-      </span>
-    </Link>
   );
 }
