@@ -36,7 +36,6 @@ export async function signUpAction(formData: FormData) {
     password,
     options: {
       data: { full_name: fullName },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
     },
   });
 
@@ -44,18 +43,7 @@ export async function signUpAction(formData: FormData) {
     redirect(`/register?error=${encodeURIComponent(error.message)}`);
   }
 
-  redirect(`/verify-email?email=${encodeURIComponent(email)}`);
-}
-
-export async function resendVerificationEmailAction(formData: FormData) {
-  const email = String(formData.get("email") ?? "");
-  const supabase = await createClient();
-  await supabase.auth.resend({
-    type: "signup",
-    email,
-    options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback` },
-  });
-  redirect(`/verify-email?email=${encodeURIComponent(email)}&sent=1`);
+  redirect("/dashboard");
 }
 
 export async function signOutAction() {
