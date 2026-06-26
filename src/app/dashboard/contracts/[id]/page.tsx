@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input, Label, Textarea } from "@/components/ui/input";
 import { StatusBadge } from "@/components/ui/badge";
 import { ContractChat } from "@/components/contract/contract-chat";
-import { ContractTimeline } from "@/components/contract/contract-timeline";
+import { ContractTimeline, ContractProgressBar } from "@/components/contract/contract-timeline";
 import { formatUsd, formatDate } from "@/lib/utils";
 import { requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -56,6 +56,15 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
         description={`${contract.contract_number} · Created ${formatDate(contract.created_at)}`}
         actions={<StatusBadge status={contract.status} />}
       />
+
+      <div className="px-6 pt-6">
+        <Card className="bg-navy-900 p-6 text-white">
+          <p className="mb-5 text-xs font-semibold uppercase tracking-wide text-white/50">
+            Digital Closing Room Progress
+          </p>
+          <ContractProgressBar status={contract.status} />
+        </Card>
+      </div>
 
       <div className="grid gap-6 p-6 lg:grid-cols-3">
         <div className="space-y-6 lg:col-span-2">
@@ -149,7 +158,22 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
 
         <div className="space-y-6">
           <Card>
-            <CardHeader><CardTitle>Actions</CardTitle></CardHeader>
+            <CardHeader><CardTitle>Escrow Officer &amp; Participants</CardTitle></CardHeader>
+            <CardContent className="space-y-3 text-sm">
+              <div className="flex items-center gap-3 rounded-lg bg-gold-tint px-3 py-2">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-navy text-xs font-semibold text-white">AT</span>
+                <div>
+                  <div className="font-medium text-gray-900">Admin Team</div>
+                  <div className="text-xs text-gray-500">Escrow Officer</div>
+                </div>
+              </div>
+              <Info label="Buyer" value={buyerProfile?.full_name ?? "—"} />
+              <Info label="Seller" value={sellerProfile?.full_name ?? "Awaiting invite acceptance"} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader><CardTitle>Quick Actions</CardTitle></CardHeader>
             <CardContent className="space-y-3">
               {["delivery_completed", "active_escrow", "awaiting_delivery"].includes(contract.status) && (
                 <form action={requestReleaseAction.bind(null, contract.id)}>
