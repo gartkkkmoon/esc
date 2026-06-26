@@ -38,7 +38,7 @@ export function StatCard({
       <CardContent className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm text-gray-500">{label}</div>
-          <div className={cn("mt-1 text-2xl font-semibold", valueToneClasses[tone])}>{value}</div>
+          <div className={cn("mt-1 font-serif text-3xl font-bold", valueToneClasses[tone])}>{value}</div>
           {trend && <div className="mt-1 text-xs text-gray-400">{trend}</div>}
         </div>
         {icon && (

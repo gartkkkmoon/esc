@@ -1,5 +1,7 @@
 import * as React from "react";
+import Link from "next/link";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
+import { BrandCrest } from "@/components/marketing/illustrations";
 
 export interface NavItem {
   label: string;
@@ -20,10 +22,13 @@ export function DashboardShell({
 }) {
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 flex-col bg-navy text-white md:flex">
-        <div className="px-6 py-6 text-lg font-semibold tracking-tight border-b border-white/10">
-          {brand}
-        </div>
+      <aside className="hidden w-64 flex-col bg-navy-900 text-white md:flex">
+        <Link href="/" className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
+          <BrandCrest className="h-9 w-9" variant="light" />
+          <span className="font-serif text-base font-bold leading-tight tracking-tight">
+            {brand}
+          </span>
+        </Link>
         <SidebarNav navItems={navItems} />
         {userSlot && <div className="border-t border-white/10 px-4 py-4">{userSlot}</div>}
       </aside>
@@ -44,7 +49,7 @@ export function PageHeader({
   return (
     <div className="flex flex-wrap items-start justify-between gap-3 border-b border-border-soft bg-white px-6 py-5">
       <div>
-        <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
+        <h1 className="font-serif text-2xl font-bold text-navy">{title}</h1>
         {description && <p className="mt-1 text-sm text-gray-500">{description}</p>}
       </div>
       {actions && <div className="flex items-center gap-2">{actions}</div>}
