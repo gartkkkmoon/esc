@@ -1,10 +1,19 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 
-export function Card({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) {
+export interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Use the heavier "elevated" shadow (--shadow-card) seen in the reference designs instead of the default flat shadow-sm. */
+  elevated?: boolean;
+}
+
+export function Card({ className, elevated, ...props }: CardProps) {
   return (
     <div
-      className={cn("rounded-xl border border-border-soft bg-white shadow-sm", className)}
+      className={cn(
+        "rounded-xl border border-border-soft bg-white",
+        elevated ? "shadow-[var(--shadow-card)]" : "shadow-sm",
+        className
+      )}
       {...props}
     />
   );

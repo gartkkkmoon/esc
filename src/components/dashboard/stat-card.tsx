@@ -34,7 +34,7 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <Card className={cn("shadow-[var(--shadow-card)]", className)}>
+    <Card elevated className={className}>
       <CardContent className="flex items-start justify-between gap-3">
         <div>
           <div className="text-sm text-gray-500">{label}</div>
