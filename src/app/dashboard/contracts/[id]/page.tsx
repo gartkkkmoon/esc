@@ -7,6 +7,7 @@ import { Input, Label, Textarea } from "@/components/ui/input";
 import { StatusBadge } from "@/components/ui/badge";
 import { ContractChat } from "@/components/contract/contract-chat";
 import { ContractTimeline, ContractProgressBar } from "@/components/contract/contract-timeline";
+import { QrCode } from "@/components/ui/qr-code";
 import { formatUsd, formatDate } from "@/lib/utils";
 import { requireUser } from "@/lib/auth/session";
 import { createClient } from "@/lib/supabase/server";
@@ -153,16 +154,20 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
               <CardContent className="space-y-3 text-sm">
                 <p className="rounded-lg bg-gold-tint px-3 py-2 text-xs text-navy">
                   Send your {contract.crypto_asset} to the address below. Once received, the escrow
-                  officer verifies it on-chain and manually marks the deposit confirmed.
+                  officer verifies it and manually marks the deposit confirmed.
                 </p>
-                <Info
-                  label="Deposit address"
-                  value={
-                    depositAddress
-                      ? <span className="break-all font-mono text-xs">{depositAddress}</span>
-                      : "Will be assigned by the escrow officer shortly"
-                  }
-                />
+                {depositAddress && (
+                  <div className="flex gap-3">
+                    <QrCode value={depositAddress} size={120} />
+                    <div className="min-w-0">
+                      <div className="text-xs text-gray-400">Deposit address</div>
+                      <div className="break-all font-mono text-xs text-gray-800">{depositAddress}</div>
+                    </div>
+                  </div>
+                )}
+                {!depositAddress && (
+                  <Info label="Deposit address" value="Will be assigned by the escrow officer shortly" />
+                )}
                 <Info label="Asset" value={`${contract.crypto_asset} on ${depositNetwork ?? "TBD"}`} />
                 <Info label="Amount" value={`${contract.amount_crypto ?? "—"} ${contract.crypto_asset}`} />
                 <form action={markDepositSentAction.bind(null, contract.id, isBuyer ? "buyer" : "seller")}>

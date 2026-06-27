@@ -5,7 +5,9 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { requireUser } from "@/lib/auth/session";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { getBalances, getBalanceHistory, requestDepositAction } from "@/lib/data/balances";
+import { QrCode } from "@/components/ui/qr-code";
 import { Wallet } from "lucide-react";
 
 const ASSETS = ["BTC", "ETH", "USDT", "USDC", "SOL", "XRP", "LTC"] as const;
@@ -23,7 +25,12 @@ export default async function WalletPage({
 }) {
   const { authId } = await requireUser();
   const { ok, error } = await searchParams;
-  const [balances, history] = await Promise.all([getBalances(authId), getBalanceHistory(authId)]);
+  const db = createAdminClient();
+  const [balances, history, { data: depositWallets }] = await Promise.all([
+    getBalances(authId),
+    getBalanceHistory(authId),
+    db.from("wallet_addresses").select("*").eq("is_platform_wallet", true).order("crypto_asset"),
+  ]);
 
   return (
     <>
@@ -56,6 +63,35 @@ export default async function WalletPage({
             );
           })}
         </div>
+
+        {/* Where to send */}
+        <Card elevated>
+          <CardHeader><CardTitle>Where to Send Your Deposit</CardTitle></CardHeader>
+          <CardContent>
+            {(depositWallets ?? []).length === 0 ? (
+              <p className="text-sm text-gray-400">
+                No deposit addresses are configured yet. Contact support before sending funds.
+              </p>
+            ) : (
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {(depositWallets ?? []).map((w) => (
+                  <div key={w.id} className="flex gap-3 rounded-lg border border-border-soft p-3">
+                    <QrCode value={w.address} size={120} />
+                    <div className="min-w-0">
+                      <div className="text-sm font-semibold text-navy">{w.crypto_asset}</div>
+                      <div className="text-xs text-gray-400">{w.network ?? "—"}</div>
+                      <div className="mt-1 break-all font-mono text-[11px] text-gray-700">{w.address}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+            <p className="mt-3 text-xs text-gray-400">
+              Scan or copy the address for the coin you&apos;re sending, then submit a deposit request below
+              so an escrow officer can verify and credit your balance.
+            </p>
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Request deposit */}
