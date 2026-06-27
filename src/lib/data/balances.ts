@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { requireUser, requireAdmin } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { addTimelineEvent } from "@/lib/data/audit";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 // All balance writes go through the service-role client (gated by requireUser /
@@ -28,6 +29,78 @@ async function applyBalanceDelta(
       { user_id: userId, asset, amount: next, updated_at: new Date().toISOString() },
       { onConflict: "user_id,asset" }
     );
+}
+
+/** Current balance for one asset. */
+async function balanceOf(db: SupabaseClient, userId: string, asset: string): Promise<number> {
+  const { data } = await db
+    .from("user_balances")
+    .select("amount")
+    .eq("user_id", userId)
+    .eq("asset", asset)
+    .maybeSingle();
+  return Number(data?.amount ?? 0);
+}
+
+/**
+ * Admin: settle a crypto-pair exchange contract by moving platform balances.
+ * Buyer pays `pay_amount pay_asset` and receives `receive_amount receive_asset`;
+ * the seller is the mirror. Blocked unless both sides have enough balance, so
+ * you can only settle after both deposits are approved.
+ */
+export async function settleExchangeAction(contractId: string) {
+  const { authId } = await requireAdmin();
+  const db = createAdminClient();
+
+  const { data: c } = await db.from("escrow_contracts").select("*").eq("id", contractId).single();
+  if (!c) redirect(`/admin/contracts/${contractId}?error=Not+found`);
+  if (c.deal_kind !== "exchange") {
+    redirect(`/admin/contracts/${contractId}?error=${encodeURIComponent("This is not an exchange contract.")}`);
+  }
+
+  const buyer = c.buyer_id as string | null;
+  const seller = c.seller_id as string | null;
+  const payAsset = c.pay_asset as string | null;
+  const recvAsset = c.receive_asset as string | null;
+  const payAmt = Number(c.pay_amount ?? 0);
+  const recvAmt = Number(c.receive_amount ?? 0);
+
+  if (!buyer || !seller || !payAsset || !recvAsset || !(payAmt > 0) || !(recvAmt > 0)) {
+    redirect(`/admin/contracts/${contractId}?error=${encodeURIComponent("Set buyer, seller, and both pay/receive assets + amounts first.")}`);
+  }
+
+  // Require both sides funded.
+  if ((await balanceOf(db, buyer!, payAsset!)) < payAmt) {
+    redirect(`/admin/contracts/${contractId}?error=${encodeURIComponent(`Buyer balance too low: needs ${payAmt} ${payAsset}.`)}`);
+  }
+  if ((await balanceOf(db, seller!, recvAsset!)) < recvAmt) {
+    redirect(`/admin/contracts/${contractId}?error=${encodeURIComponent(`Seller balance too low: needs ${recvAmt} ${recvAsset}.`)}`);
+  }
+
+  // Buyer: -pay +receive. Seller: -receive +pay.
+  await applyBalanceDelta(db, buyer!, payAsset!, -payAmt);
+  await applyBalanceDelta(db, buyer!, recvAsset!, recvAmt);
+  await applyBalanceDelta(db, seller!, recvAsset!, -recvAmt);
+  await applyBalanceDelta(db, seller!, payAsset!, payAmt);
+
+  const now = new Date().toISOString();
+  await db.from("balance_transactions").insert([
+    { user_id: buyer, asset: payAsset, amount: -payAmt, tx_type: "exchange_debit", status: "approved", contract_id: contractId, reviewed_by: authId, reviewed_at: now, note: "Exchange settlement" },
+    { user_id: buyer, asset: recvAsset, amount: recvAmt, tx_type: "exchange_credit", status: "approved", contract_id: contractId, reviewed_by: authId, reviewed_at: now, note: "Exchange settlement" },
+    { user_id: seller, asset: recvAsset, amount: -recvAmt, tx_type: "exchange_debit", status: "approved", contract_id: contractId, reviewed_by: authId, reviewed_at: now, note: "Exchange settlement" },
+    { user_id: seller, asset: payAsset, amount: payAmt, tx_type: "exchange_credit", status: "approved", contract_id: contractId, reviewed_by: authId, reviewed_at: now, note: "Exchange settlement" },
+  ]);
+
+  await db.from("escrow_contracts").update({ status: "released", payment_status: "released" }).eq("id", contractId);
+
+  await addTimelineEvent({
+    contractId,
+    actorId: authId,
+    eventType: "exchange_settled",
+    description: `Exchange settled: buyer paid ${payAmt} ${payAsset} and received ${recvAmt} ${recvAsset}.`,
+  });
+
+  redirect(`/admin/contracts/${contractId}?ok=settled`);
 }
 
 /** Read a user's balances (service-role, RLS-independent). */
