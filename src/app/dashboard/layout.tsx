@@ -1,10 +1,11 @@
 import { DashboardShell, type NavItem } from "@/components/layout/dashboard-shell";
 import { requireUser } from "@/lib/auth/session";
 import { signOutAction } from "@/lib/auth/actions";
-import { LayoutDashboard, FilePlus2, FileStack, UserCircle2, ShieldCheck, LayoutPanelLeft } from "lucide-react";
+import { LayoutDashboard, FilePlus2, FileStack, UserCircle2, ShieldCheck, LayoutPanelLeft, Wallet } from "lucide-react";
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
+  { label: "Wallet", href: "/dashboard/wallet", icon: <Wallet className="h-4 w-4" /> },
   { label: "New Contract", href: "/dashboard/contracts/new", icon: <FilePlus2 className="h-4 w-4" /> },
   { label: "My Contracts", href: "/dashboard/contracts", icon: <FileStack className="h-4 w-4" /> },
   { label: "KYC", href: "/dashboard/kyc", icon: <UserCircle2 className="h-4 w-4" /> },

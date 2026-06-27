@@ -2,7 +2,7 @@ import { DashboardShell, type NavItem } from "@/components/layout/dashboard-shel
 import { requireAdmin } from "@/lib/auth/session";
 import { signOutAction } from "@/lib/auth/actions";
 import {
-  LayoutDashboard, FileStack, Users, ShieldCheck, Wallet, Gavel, ScrollText, Settings,
+  LayoutDashboard, FileStack, Users, ShieldCheck, Wallet, Coins, Gavel, ScrollText, Settings,
 } from "lucide-react";
 
 const navItems: NavItem[] = [
@@ -10,6 +10,7 @@ const navItems: NavItem[] = [
   { label: "Contracts", href: "/admin/contracts", icon: <FileStack className="h-4 w-4" /> },
   { label: "Users", href: "/admin/users", icon: <Users className="h-4 w-4" /> },
   { label: "KYC Queue", href: "/admin/kyc", icon: <ShieldCheck className="h-4 w-4" /> },
+  { label: "Balances", href: "/admin/balances", icon: <Coins className="h-4 w-4" /> },
   { label: "Wallets", href: "/admin/wallets", icon: <Wallet className="h-4 w-4" /> },
   { label: "Disputes", href: "/admin/disputes", icon: <Gavel className="h-4 w-4" /> },
   { label: "Audit Logs", href: "/admin/audit-logs", icon: <ScrollText className="h-4 w-4" /> },
