@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getUserRoles } from "@/lib/supabase/admin";
+import { getEffectiveRoles } from "@/lib/supabase/admin";
 
 export async function signInAction(formData: FormData) {
   const email = String(formData.get("email") ?? "");
@@ -16,9 +16,7 @@ export async function signInAction(formData: FormData) {
 
   const { data: userData } = await supabase.auth.getUser();
   if (userData.user) {
-    // Resolve roles with the service-role client so admin detection does not
-    // depend on RLS on user_roles.
-    const roles = await getUserRoles(userData.user.id);
+    const roles = await getEffectiveRoles(userData.user.id, userData.user.email);
     redirect(roles.includes("admin") ? "/admin" : "/dashboard");
   }
   redirect("/login");
@@ -36,7 +34,7 @@ export async function adminSignInAction(formData: FormData) {
 
   const { data: userData } = await supabase.auth.getUser();
   if (userData.user) {
-    const roles = await getUserRoles(userData.user.id);
+    const roles = await getEffectiveRoles(userData.user.id, userData.user.email);
     if (roles.includes("admin")) {
       redirect("/admin");
     }
