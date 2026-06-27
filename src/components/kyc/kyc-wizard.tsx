@@ -84,6 +84,7 @@ export function KycWizard({
 }) {
   const [step, setStep] = React.useState<StepKey>("id_type");
   const [idType, setIdType] = React.useState<IdType | null>(null);
+  const [phone, setPhone] = React.useState("");
   const [idDocument, setIdDocument] = React.useState<File | null>(null);
   const [proofOfAddress, setProofOfAddress] = React.useState<File | null>(null);
   const [selfie, setSelfie] = React.useState<File | null>(null);
@@ -113,7 +114,7 @@ export function KycWizard({
     if (idx > 0) setStep(STEPS[idx - 1].key);
   }
 
-  const canProceedFromIdType = idType !== null;
+  const canProceedFromIdType = idType !== null && phone.trim().length >= 6;
   const canProceedFromUpload = idDocument !== null;
   const canProceedFromSelfie = selfie !== null;
 
@@ -188,6 +189,8 @@ export function KycWizard({
             onChange={(e) => setIdDocument(e.target.files?.[0] ?? null)}
           />
           <input ref={passportInputRef} type="file" name="passport" accept="image/*,.pdf" className="hidden" />
+          {/* Phone carrier — kept mounted so its value is included on submit. */}
+          <input type="hidden" name="phone" value={phone} />
           <input
             ref={proofInputRef}
             type="file"
@@ -215,6 +218,18 @@ export function KycWizard({
 
           {step === "id_type" && (
             <div className="space-y-4">
+              <div>
+                <Label htmlFor="phone_visible">Phone number</Label>
+                <Input
+                  id="phone_visible"
+                  type="tel"
+                  inputMode="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+1 555 000 0000"
+                />
+                <p className="mt-1 text-xs text-gray-400">Used by compliance to verify your identity.</p>
+              </div>
               <p className="text-sm text-gray-600">Select the type of government-issued ID you&apos;ll upload.</p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {ID_TYPES.map((t) => (
@@ -320,6 +335,7 @@ export function KycWizard({
             <div className="space-y-4">
               <p className="text-sm text-gray-600">Review your submission before sending it for manual compliance review.</p>
               <div className="grid gap-3 sm:grid-cols-2">
+                <ReviewRow label="Phone number" value={phone || "Not provided"} ok={phone.trim().length >= 6} />
                 <ReviewRow label="ID type" value={ID_TYPES.find((t) => t.value === idType)?.label ?? "—"} />
                 <ReviewRow label="Identity document" value={idDocument?.name ?? "Not uploaded"} ok={!!idDocument} />
                 <ReviewRow label="Proof of address" value={proofOfAddress?.name ?? "Skipped"} />

@@ -74,6 +74,13 @@ export default async function AdminKycQueuePage() {
                       <DocThumbnail key={d.label} label={d.label} url={d.url} />
                     ))}
                   </div>
+                  <div className="rounded-lg bg-gray-50 px-3 py-2 text-xs text-gray-600">
+                    <span className="font-medium text-gray-800">Phone:</span> {user?.phone || "—"}
+                    <span className="mx-2 text-gray-300">·</span>
+                    <span className="font-medium text-gray-800">Email:</span> {user?.email || "—"}
+                    <span className="mx-2 text-gray-300">·</span>
+                    <span className="font-medium text-gray-800">KYC:</span> {user?.kyc_status ?? "—"}
+                  </div>
                   <p className="text-xs text-gray-400">Submitted {formatDate(s.submitted_at)}</p>
                   {s.compliance_notes && <p className="text-xs text-amber-700">Notes: {s.compliance_notes}</p>}
                 </div>
@@ -103,8 +110,13 @@ function DocThumbnail({ label, url }: { label: string; url: string | null }) {
         url ? "border-border-soft hover:bg-gray-50" : "border-dashed border-border-soft opacity-60"
       }`}
     >
-      <div className="flex h-16 items-center justify-center rounded-md bg-gray-50">
-        <FileImage className={`h-6 w-6 ${url ? "text-navy" : "text-gray-300"}`} />
+      <div className="flex h-24 items-center justify-center overflow-hidden rounded-md bg-gray-50">
+        {url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={url} alt={label} className="h-full w-full object-cover" />
+        ) : (
+          <FileImage className="h-6 w-6 text-gray-300" />
+        )}
       </div>
       <span className="text-xs font-medium text-gray-700">{label}</span>
       <span className={`text-xs ${url ? "font-medium text-navy underline" : "text-gray-300"}`}>

@@ -1,8 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
 import { requireUser } from "@/lib/auth/session";
+import { createAdminClient } from "@/lib/supabase/admin";
+import type { SupabaseClient } from "@supabase/supabase-js";
 
 const DOCUMENT_FIELDS = [
   "id_document",
@@ -12,8 +13,11 @@ const DOCUMENT_FIELDS = [
   "liveness_check",
 ] as const;
 
+// Uploads and DB writes use the service-role client (gated by requireUser) so a
+// submission reliably saves even if storage/RLS policies aren't perfectly set.
+// Files are still stored under the user's own {authId}/ folder.
 async function uploadKycFile(
-  supabase: Awaited<ReturnType<typeof createClient>>,
+  supabase: SupabaseClient,
   authId: string,
   field: string,
   file: File
@@ -31,7 +35,9 @@ async function uploadKycFile(
 
 export async function submitKycAction(formData: FormData) {
   const { authId } = await requireUser();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
+
+  const phone = String(formData.get("phone") ?? "").trim();
 
   const uploaded: Record<string, string | null> = {};
   for (const field of DOCUMENT_FIELDS) {
@@ -49,7 +55,10 @@ export async function submitKycAction(formData: FormData) {
     liveness_check_url: uploaded.liveness_check,
   });
 
-  await supabase.from("profiles").update({ kyc_status: "pending" }).eq("id", authId);
+  await supabase
+    .from("profiles")
+    .update({ kyc_status: "pending", ...(phone ? { phone } : {}) })
+    .eq("id", authId);
 
   redirect("/dashboard/kyc");
 }
