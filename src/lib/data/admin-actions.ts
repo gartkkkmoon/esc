@@ -249,7 +249,7 @@ export async function createContractByAdminAction(formData: FormData) {
     contractId: contract.id,
     actorId: authId,
     eventType: "created_by_admin",
-    description: `Admin manually created this contract. Reason: ${reason}`,
+    description: `Contract created by the escrow team. Reason: ${reason}`,
   });
 
   redirect(`/admin/contracts/${contract.id}`);

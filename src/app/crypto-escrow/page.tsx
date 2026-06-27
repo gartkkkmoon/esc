@@ -75,7 +75,7 @@ export default function CryptoEscrowPage() {
             <div className="mt-8 grid gap-6 sm:grid-cols-3">
               <Step n={1} icon={<Lock className="h-5 w-5 text-gold" />} title="Buyer Creates Contract" desc="Set the asset, amount, and terms, then invite the seller via a secure link." />
               <Step n={2} icon={<Scale className="h-5 w-5 text-gold" />} title="Seller Joins & Funds Confirm" desc="Seller accepts terms. Buyer sends crypto; our team confirms the deposit on-chain." />
-              <Step n={3} icon={<Clock className="h-5 w-5 text-gold" />} title="Admin Manually Releases" desc="Once delivery is confirmed, an admin manually releases funds to the seller." />
+              <Step n={3} icon={<Clock className="h-5 w-5 text-gold" />} title="Secure Manual Release" desc="Once delivery is confirmed, our escrow team reviews and releases the funds to the seller." />
             </div>
           </div>
         </section>

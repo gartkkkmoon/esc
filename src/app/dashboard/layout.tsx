@@ -1,7 +1,7 @@
 import { DashboardShell, type NavItem } from "@/components/layout/dashboard-shell";
 import { requireUser } from "@/lib/auth/session";
 import { signOutAction } from "@/lib/auth/actions";
-import { LayoutDashboard, FilePlus2, FileStack, UserCircle2, ShieldCheck } from "lucide-react";
+import { LayoutDashboard, FilePlus2, FileStack, UserCircle2, ShieldCheck, LayoutPanelLeft } from "lucide-react";
 
 const navItems: NavItem[] = [
   { label: "Dashboard", href: "/dashboard", icon: <LayoutDashboard className="h-4 w-4" /> },
@@ -12,12 +12,18 @@ const navItems: NavItem[] = [
 ];
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const { profile } = await requireUser();
+  const { profile, roles } = await requireUser();
+
+  // Admins land on /admin at login, but if one is browsing the client portal,
+  // surface a direct link back into the admin portal.
+  const items = roles.includes("admin")
+    ? [...navItems, { label: "Admin Portal", href: "/admin", icon: <LayoutPanelLeft className="h-4 w-4" /> }]
+    : navItems;
 
   return (
     <DashboardShell
       brand="Client Portal"
-      navItems={navItems}
+      navItems={items}
       userSlot={
         <form action={signOutAction} className="flex items-center justify-between gap-2">
           <span className="truncate text-sm text-white/80">{profile?.full_name || profile?.email}</span>
