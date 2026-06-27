@@ -14,7 +14,7 @@ import {
   generateInviteAction,
   requestReleaseAction,
   openDisputeAction,
-  submitPaymentHashAction,
+  markDepositSentAction,
   sendMessageAction,
 } from "@/lib/data/contracts";
 
@@ -165,11 +165,13 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
                 />
                 <Info label="Asset" value={`${contract.crypto_asset} on ${depositNetwork ?? "TBD"}`} />
                 <Info label="Amount" value={`${contract.amount_crypto ?? "—"} ${contract.crypto_asset}`} />
-                <form action={submitPaymentHashAction.bind(null, contract.id)} className="space-y-2">
-                  <Label htmlFor="transaction_hash">Your transaction hash</Label>
-                  <Input id="transaction_hash" name="transaction_hash" placeholder="0x..." required />
-                  <Button type="submit" size="sm">Submit Transaction Hash</Button>
+                <form action={markDepositSentAction.bind(null, contract.id, isBuyer ? "buyer" : "seller")}>
+                  <Button type="submit" size="sm" className="w-full">I&apos;ve Sent My Deposit</Button>
                 </form>
+                <p className="text-xs text-gray-400">
+                  After you send the funds, click the button above. The escrow officer will verify and
+                  confirm your deposit manually.
+                </p>
               </CardContent>
             </Card>
           )}

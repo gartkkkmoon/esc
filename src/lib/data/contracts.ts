@@ -3,6 +3,7 @@
 import { randomUUID } from "crypto";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireUser } from "@/lib/auth/session";
 import { addTimelineEvent } from "@/lib/data/audit";
 
@@ -221,6 +222,48 @@ export async function submitPaymentHashAction(contractId: string, formData: Form
     actorId: authId,
     eventType: "payment_submitted",
     description: `Buyer submitted transaction hash ${txHash}.`,
+  });
+
+  redirect(`/dashboard/contracts/${contractId}`);
+}
+
+/**
+ * A depositor (buyer or seller) marks that they've sent their deposit — no
+ * transaction hash required. This flags the contract for the escrow officer to
+ * verify off-platform and manually confirm. Writes go through the service-role
+ * client (after verifying the caller is a participant) so they aren't blocked
+ * by RLS on the live database.
+ */
+export async function markDepositSentAction(contractId: string, role: "buyer" | "seller") {
+  const { authId } = await requireUser();
+  const admin = createAdminClient();
+
+  const { data: contract } = await admin
+    .from("escrow_contracts")
+    .select("buyer_id, seller_id")
+    .eq("id", contractId)
+    .single();
+
+  if (!contract || (contract.buyer_id !== authId && contract.seller_id !== authId)) {
+    redirect("/dashboard");
+  }
+
+  await admin
+    .from("escrow_contracts")
+    .update({ status: "deposit_pending", payment_status: "pending" })
+    .eq("id", contractId);
+
+  await admin.from("contract_payments").insert({
+    contract_id: contractId,
+    payment_status: "pending",
+    submitted_by: authId,
+  });
+
+  await addTimelineEvent({
+    contractId,
+    actorId: authId,
+    eventType: "deposit_marked_sent",
+    description: `${role === "buyer" ? "Buyer" : "Seller"} marked their deposit as sent. Awaiting manual confirmation by the escrow officer.`,
   });
 
   redirect(`/dashboard/contracts/${contractId}`);
