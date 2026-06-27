@@ -262,11 +262,6 @@ export async function createContractByAdminAction(formData: FormData) {
       amount_crypto: Number(formData.get("amount_crypto") ?? 0) || null,
       amount_usd: amountUsd,
       kyc_requirement: amountUsd > 100 ? "required" : "not_required",
-      deal_kind: String(formData.get("deal_kind") ?? "goods"),
-      pay_asset: String(formData.get("pay_asset") ?? "") || null,
-      pay_amount: Number(formData.get("pay_amount") ?? 0) || null,
-      receive_asset: String(formData.get("receive_asset") ?? "") || null,
-      receive_amount: Number(formData.get("receive_amount") ?? 0) || null,
       status: "admin_reviewing",
       created_by: authId,
     })

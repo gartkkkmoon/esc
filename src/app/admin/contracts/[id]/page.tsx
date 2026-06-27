@@ -12,13 +12,6 @@ import { requireAdmin } from "@/lib/auth/session";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { addInternalNoteAction, editContractAction, setContractStatusAction } from "@/lib/data/admin-actions";
 import { sendMessageAction } from "@/lib/data/contracts";
-import { settleExchangeAction } from "@/lib/data/balances";
-
-async function balanceOf(db: ReturnType<typeof createAdminClient>, userId: string | null, asset: string | null): Promise<number> {
-  if (!userId || !asset) return 0;
-  const { data } = await db.from("user_balances").select("amount").eq("user_id", userId).eq("asset", asset).maybeSingle();
-  return Number(data?.amount ?? 0);
-}
 
 const CONTRACT_STATUSES = [
   "draft", "waiting_for_seller", "seller_joined", "seller_accepted",
@@ -34,10 +27,10 @@ export default async function AdminContractDetailPage({
   searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ error?: string; ok?: string }>;
+  searchParams: Promise<{ error?: string }>;
 }) {
   const { id } = await params;
-  const { error, ok } = await searchParams;
+  const { error } = await searchParams;
   const { authId } = await requireAdmin();
   const supabase = createAdminClient();
 
@@ -62,14 +55,6 @@ export default async function AdminContractDetailPage({
   if (buyer) names[buyer.id] = buyer.full_name;
   if (seller) names[seller.id] = seller.full_name;
 
-  const isExchange = contract.deal_kind === "exchange";
-  const buyerPayBal = isExchange ? await balanceOf(supabase, contract.buyer_id, contract.pay_asset) : 0;
-  const sellerRecvBal = isExchange ? await balanceOf(supabase, contract.seller_id, contract.receive_asset) : 0;
-  const payAmt = Number(contract.pay_amount ?? 0);
-  const recvAmt = Number(contract.receive_amount ?? 0);
-  const buyerFunded = buyerPayBal >= payAmt && payAmt > 0;
-  const sellerFunded = sellerRecvBal >= recvAmt && recvAmt > 0;
-
   return (
     <>
       <PageHeader
@@ -84,7 +69,6 @@ export default async function AdminContractDetailPage({
         }
       />
       {error && <div className="mx-6 mt-4 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>}
-      {ok === "settled" && <div className="mx-6 mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm text-emerald-700">Exchange settled — balances moved between buyer and seller.</div>}
 
       <div className="px-6 pt-6">
         <Card className="bg-navy-900 p-6 text-white">
@@ -115,37 +99,6 @@ export default async function AdminContractDetailPage({
               <CardContent className="border-t border-border-soft text-sm text-gray-600">{contract.description}</CardContent>
             )}
           </Card>
-
-          {isExchange && (
-            <Card className="border-gold/40">
-              <CardHeader><CardTitle>Exchange Settlement</CardTitle></CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <div className="grid grid-cols-2 gap-4">
-                  <Info label="Buyer pays" value={`${payAmt} ${contract.pay_asset ?? "—"}`} />
-                  <Info label="Buyer receives" value={`${recvAmt} ${contract.receive_asset ?? "—"}`} />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className={`rounded-lg px-3 py-2 ${buyerFunded ? "bg-emerald-50" : "bg-amber-50"}`}>
-                    <div className="text-xs text-gray-500">Buyer balance ({contract.pay_asset})</div>
-                    <div className="font-medium">{buyerPayBal} {buyerFunded ? "✓ funded" : "— not enough"}</div>
-                  </div>
-                  <div className={`rounded-lg px-3 py-2 ${sellerFunded ? "bg-emerald-50" : "bg-amber-50"}`}>
-                    <div className="text-xs text-gray-500">Seller balance ({contract.receive_asset})</div>
-                    <div className="font-medium">{sellerRecvBal} {sellerFunded ? "✓ funded" : "— not enough"}</div>
-                  </div>
-                </div>
-                <form action={settleExchangeAction.bind(null, contract.id)}>
-                  <Button type="submit" variant="success" className="w-full" disabled={!buyerFunded || !sellerFunded}>
-                    Settle Exchange &amp; Move Balances
-                  </Button>
-                </form>
-                <p className="text-xs text-gray-400">
-                  Both sides must have approved balances first. Settling debits the buyer&apos;s {contract.pay_asset} and
-                  credits {contract.receive_asset} (and the mirror for the seller), then marks the contract released.
-                </p>
-              </CardContent>
-            </Card>
-          )}
 
           {dispute && (
             <Card className="border-red-200 bg-red-50/40">
