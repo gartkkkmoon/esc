@@ -1,7 +1,7 @@
 import * as React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { SidebarNav } from "@/components/layout/sidebar-nav";
-import { BrandCrest } from "@/components/marketing/illustrations";
 
 export interface NavItem {
   label: string;
@@ -23,9 +23,15 @@ export function DashboardShell({
   return (
     <div className="flex min-h-screen bg-background">
       <aside className="hidden w-64 flex-col bg-navy-900 text-white md:flex">
-        <Link href="/" className="flex items-center gap-3 border-b border-white/10 px-5 py-5">
-          <BrandCrest className="h-9 w-9" variant="light" />
-          <span className="font-serif text-base font-bold leading-tight tracking-tight">
+        <Link href="/" className="block border-b border-white/10 px-5 py-5">
+          <Image
+            src="/images/logo.png"
+            alt="Broker Title & Escrow, LLC"
+            width={391}
+            height={130}
+            className="h-9 w-auto"
+          />
+          <span className="mt-2 block text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">
             {brand}
           </span>
         </Link>

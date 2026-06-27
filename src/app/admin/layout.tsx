@@ -21,7 +21,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <DashboardShell
-      brand="Admin · Broker's Escrow"
+      brand="Admin Portal"
       navItems={navItems}
       userSlot={
         <form action={signOutAction} className="flex items-center justify-between gap-2">

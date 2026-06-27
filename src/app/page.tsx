@@ -1,7 +1,7 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
-import { HeroArt, CardBanner } from "@/components/marketing/illustrations";
 import {
   ShieldCheck,
   Building2,
@@ -60,7 +60,16 @@ export default function Home() {
               </div>
             </div>
             <div className="relative">
-              <HeroArt className="w-full drop-shadow-[0_24px_60px_rgba(11,21,48,0.25)]" />
+              <div className="overflow-hidden rounded-3xl bg-navy-900 shadow-[0_24px_60px_rgba(11,21,48,0.25)]">
+                <Image
+                  src="/images/home-hero.jpg"
+                  alt="Real estate and cryptocurrency escrow, secured"
+                  width={896}
+                  height={1200}
+                  priority
+                  className="h-full w-full object-cover"
+                />
+              </div>
             </div>
           </div>
         </section>
@@ -88,7 +97,7 @@ export default function Home() {
             <div className="mt-12 grid gap-8 md:grid-cols-2">
               <ServiceCard
                 href="/real-estate-escrow"
-                banner={<CardBanner icon={<Building2 className="h-8 w-8" />} />}
+                banner={<PhotoBanner src="/images/card-realestate.jpg" alt="Residential real estate closing" />}
                 title="Real Estate Escrow"
                 desc="Secure closings for residential and commercial property transactions."
                 points={[
@@ -102,7 +111,7 @@ export default function Home() {
               />
               <ServiceCard
                 href="/crypto-escrow"
-                banner={<CardBanner tone="gold" icon={<Bitcoin className="h-8 w-8" />} />}
+                banner={<PhotoBanner src="/images/card-crypto.jpg" alt="Cryptocurrency escrow" />}
                 title="Crypto Escrow"
                 desc="Buyer-and-seller protected cryptocurrency exchange with manual review."
                 points={[
@@ -159,6 +168,15 @@ export default function Home() {
       </main>
       <SiteFooter />
     </>
+  );
+}
+
+function PhotoBanner({ src, alt }: { src: string; alt: string }) {
+  return (
+    <div className="relative h-44 w-full overflow-hidden">
+      <Image src={src} alt={alt} fill sizes="(max-width: 768px) 100vw, 600px" className="object-cover" />
+      <div className="absolute inset-0 bg-gradient-to-t from-navy-900/30 to-transparent" />
+    </div>
   );
 }
 

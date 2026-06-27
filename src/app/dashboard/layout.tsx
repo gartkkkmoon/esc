@@ -16,7 +16,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <DashboardShell
-      brand="Broker's Escrow"
+      brand="Client Portal"
       navItems={navItems}
       userSlot={
         <form action={signOutAction} className="flex items-center justify-between gap-2">

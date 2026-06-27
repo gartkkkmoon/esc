@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { ShieldCheck, UserCheck, Eye, Coins, Lock, Scale, Clock } from "lucide-react";
@@ -29,29 +30,41 @@ export default function CryptoEscrowPage() {
               backgroundSize: "48px 48px",
             }}
           />
-          <div className="relative mx-auto max-w-5xl px-6 py-20 text-center">
-            <p className="text-sm font-semibold uppercase tracking-wide text-gold">Crypto Escrow</p>
-            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl">
-              Secure Cryptocurrency Escrow,
-              <br className="hidden sm:block" /> Built on Decades of Trust
-            </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-white/70">
-              Buyer and seller open an escrow contract together. Funds are confirmed on-chain,
-              reviewed by our team, and released manually — never automatically.
-            </p>
-            <div className="mt-8 flex justify-center gap-3">
-              <Link
-                href="/register"
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-gold px-6 text-sm font-medium text-white hover:opacity-90"
-              >
-                Create Escrow
-              </Link>
-              <Link
-                href="/login"
-                className="inline-flex h-11 items-center justify-center rounded-lg border border-white/20 px-6 text-sm font-medium text-white hover:bg-white/10"
-              >
-                Log In
-              </Link>
+          <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 py-20 lg:grid-cols-2">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-wide text-gold">Crypto Escrow</p>
+              <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl">
+                Secure Cryptocurrency Escrow,
+                <br className="hidden sm:block" /> Built on Decades of Trust
+              </h1>
+              <p className="mt-5 max-w-xl text-lg text-white/80">
+                Buyer and seller open an escrow contract together. Funds are confirmed on-chain,
+                reviewed by our team, and released manually — never automatically.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Link
+                  href="/register"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-gold px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] hover:opacity-90"
+                >
+                  Create Escrow
+                </Link>
+                <Link
+                  href="/login"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-white/30 px-6 text-sm font-semibold text-white hover:bg-white/10"
+                >
+                  Log In
+                </Link>
+              </div>
+            </div>
+            <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-3xl">
+              <Image
+                src="/images/crypto-hero.jpg"
+                alt="Cryptocurrency escrow secured by a digital shield"
+                width={896}
+                height={1200}
+                priority
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </section>

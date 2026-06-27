@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SiteHeader } from "@/components/marketing/site-header";
 import { SiteFooter } from "@/components/marketing/site-footer";
 import { Building2, FileCheck2, ShieldCheck, Landmark, FileSignature, KeySquare, Handshake } from "lucide-react";
@@ -9,39 +10,41 @@ export default function RealEstateEscrowPage() {
       <SiteHeader />
       <main className="flex-1">
         <section className="relative overflow-hidden border-b border-border-soft">
-          <div
-            className="absolute inset-0"
-            style={{
-              backgroundImage:
-                "linear-gradient(120deg, #060b1c 0%, #0b1530 45%, #131f45 75%, #1c2a5c 100%)",
-            }}
+          <Image
+            src="/images/realestate-hero.jpg"
+            alt="Luxury modern home at sunset"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[70%_center]"
           />
-          <div
-            className="absolute inset-0 opacity-30"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 80% 20%, rgba(176,141,87,0.35), transparent 50%), radial-gradient(circle at 10% 80%, rgba(255,255,255,0.08), transparent 45%)",
-            }}
-          />
-          <div
-            className="absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage:
-                "linear-gradient(rgba(255,255,255,0.6) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.6) 1px, transparent 1px)",
-              backgroundSize: "56px 56px",
-            }}
-          />
-          <div className="relative mx-auto max-w-5xl px-6 py-20 text-center">
-            <p className="text-sm font-semibold uppercase tracking-wide text-gold">Real Estate Escrow</p>
-            <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl">
-              Real Estate Closings,
-              <br className="hidden sm:block" /> Secure and Simple
-            </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-white/70">
-              Broker&apos;s Title &amp; Escrow, LLC has handled residential and commercial closings,
-              title insurance, and escrow disbursement for years. This online platform focuses on
-              crypto escrow — for a real estate transaction, our team works with you directly.
-            </p>
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900/90 via-navy-900/60 to-navy-900/10" />
+          <div className="relative mx-auto max-w-6xl px-6 py-28 md:py-36">
+            <div className="max-w-xl">
+              <p className="text-sm font-semibold uppercase tracking-wide text-gold">Real Estate Escrow</p>
+              <h1 className="mt-4 font-serif text-4xl font-bold leading-tight text-white md:text-5xl">
+                Real Estate Closings
+                <br className="hidden sm:block" /> Made Secure and Simple
+              </h1>
+              <p className="mt-5 max-w-lg text-lg text-white/80">
+                Broker&apos;s Title &amp; Escrow, LLC provides professional title, escrow, and closing
+                services for residential and commercial property transactions.
+              </p>
+              <div className="mt-8 flex flex-wrap gap-4">
+                <Link
+                  href="/register"
+                  className="inline-flex h-12 items-center justify-center rounded-lg bg-gold px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] transition-opacity hover:opacity-90"
+                >
+                  Start a Closing
+                </Link>
+                <Link
+                  href="/#contact"
+                  className="inline-flex h-12 items-center justify-center rounded-lg border border-white/30 px-6 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+                >
+                  Contact Escrow Officer
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 

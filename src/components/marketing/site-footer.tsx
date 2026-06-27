@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BrandCrest } from "./illustrations";
+import Image from "next/image";
 import { Phone, Mail, MapPin } from "lucide-react";
 
 export function SiteFooter() {
@@ -7,12 +7,13 @@ export function SiteFooter() {
     <footer className="border-t border-border-soft bg-navy text-white/70">
       <div className="mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-4">
         <div className="md:col-span-1">
-          <div className="flex items-center gap-3">
-            <BrandCrest className="h-10 w-10" variant="light" />
-            <span className="font-serif text-base font-bold text-white">
-              Broker&apos;s Title &amp; Escrow
-            </span>
-          </div>
+          <Image
+            src="/images/logo.png"
+            alt="Broker Title & Escrow, LLC"
+            width={391}
+            height={130}
+            className="h-12 w-auto"
+          />
           <p className="mt-4 text-sm leading-relaxed">
             Licensed title, closing, and escrow services. Secure escrow for real estate and
             digital assets, with manual oversight on every transaction.

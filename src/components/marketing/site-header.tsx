@@ -1,6 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ShieldCheck } from "lucide-react";
-import { BrandCrest } from "./illustrations";
 
 export function SiteHeader() {
   return (
@@ -15,16 +15,15 @@ export function SiteHeader() {
 
       <div className="border-b border-border-soft">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
-          <Link href="/" className="flex items-center gap-3">
-            <BrandCrest className="h-10 w-10" />
-            <span className="leading-tight">
-              <span className="block font-serif text-base font-bold tracking-tight text-navy">
-                Broker&apos;s Title &amp; Escrow
-              </span>
-              <span className="block text-[10px] font-medium uppercase tracking-[0.2em] text-gold">
-                Secure Escrow Services
-              </span>
-            </span>
+          <Link href="/" className="flex items-center">
+            <Image
+              src="/images/logo.png"
+              alt="Broker Title & Escrow, LLC"
+              width={391}
+              height={130}
+              priority
+              className="h-11 w-auto"
+            />
           </Link>
 
           <nav className="hidden items-center gap-7 text-sm font-medium text-gray-600 lg:flex">
