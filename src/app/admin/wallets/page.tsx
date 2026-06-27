@@ -5,7 +5,7 @@ import { Input, Label, Select } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatUsd } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { addWalletAction, updateWalletAction, deleteWalletAction } from "@/lib/data/wallets";
 import { Wallet, Trash2 } from "lucide-react";
 
@@ -18,7 +18,7 @@ export default async function AdminWalletsPage({
 }) {
   await requireAdmin();
   const { ok, error } = await searchParams;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const [{ data: wallets }, { data: pendingDeposits }, { data: pendingReleases }] = await Promise.all([
     supabase.from("wallet_addresses").select("*").order("created_at", { ascending: false }),

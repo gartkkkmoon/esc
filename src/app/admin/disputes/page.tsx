@@ -4,11 +4,11 @@ import { Table, Thead, Th, Tr, Td } from "@/components/ui/table";
 import { StatusBadge } from "@/components/ui/badge";
 import { formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function AdminDisputesPage() {
   await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: disputes } = await supabase.from("disputes").select("*").order("created_at", { ascending: false });
   const contractIds = [...new Set((disputes ?? []).map((d) => d.contract_id))];
   const { data: contracts } = contractIds.length

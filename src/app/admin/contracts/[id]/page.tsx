@@ -9,9 +9,18 @@ import { ContractTimeline, ContractProgressBar } from "@/components/contract/con
 import { ManualActionsPanel } from "@/components/admin/manual-actions-panel";
 import { formatUsd, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
-import { addInternalNoteAction, editContractAction } from "@/lib/data/admin-actions";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { addInternalNoteAction, editContractAction, setContractStatusAction } from "@/lib/data/admin-actions";
 import { sendMessageAction } from "@/lib/data/contracts";
+
+const CONTRACT_STATUSES = [
+  "draft", "waiting_for_seller", "seller_joined", "seller_accepted",
+  "waiting_for_deposit", "deposit_pending", "blockchain_confirming", "deposit_confirmed",
+  "admin_reviewing", "active_escrow", "awaiting_delivery", "delivery_completed",
+  "release_requested", "admin_reviewing_release", "released", "completed",
+  "cancelled", "refunded", "disputed", "under_mediation", "resolved", "closed",
+] as const;
+const PAYMENT_STATUSES = ["unpaid", "pending", "paid", "failed", "refunded", "released"] as const;
 
 export default async function AdminContractDetailPage({
   params,
@@ -23,7 +32,7 @@ export default async function AdminContractDetailPage({
   const { id } = await params;
   const { error } = await searchParams;
   const { authId } = await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: contract } = await supabase.from("escrow_contracts").select("*").eq("id", id).single();
   if (!contract) notFound();
@@ -193,6 +202,35 @@ export default async function AdminContractDetailPage({
               </div>
               <Info label="Buyer" value={buyer?.full_name ?? "—"} />
               <Info label="Seller" value={seller?.full_name ?? "—"} />
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader><CardTitle>Set Status Directly</CardTitle></CardHeader>
+            <CardContent>
+              <form action={setContractStatusAction.bind(null, contract.id)} className="space-y-3">
+                <div>
+                  <Label htmlFor="status">Contract status</Label>
+                  <Select id="status" name="status" defaultValue={contract.status}>
+                    {CONTRACT_STATUSES.map((s) => (
+                      <option key={s} value={s}>{s.replaceAll("_", " ")}</option>
+                    ))}
+                  </Select>
+                </div>
+                <div>
+                  <Label htmlFor="payment_status">Payment status</Label>
+                  <Select id="payment_status" name="payment_status" defaultValue={contract.payment_status}>
+                    {PAYMENT_STATUSES.map((s) => (
+                      <option key={s} value={s}>{s.replaceAll("_", " ")}</option>
+                    ))}
+                  </Select>
+                </div>
+                <Button type="submit" className="w-full">Update Status</Button>
+                <p className="text-xs text-gray-400">
+                  Overrides the contract and payment status to any value. Use the action buttons below
+                  for guided transitions with audit reasons.
+                </p>
+              </form>
             </CardContent>
           </Card>
 

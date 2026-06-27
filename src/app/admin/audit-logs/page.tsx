@@ -2,11 +2,11 @@ import { PageHeader } from "@/components/layout/dashboard-shell";
 import { Table, Thead, Th, Tr, Td } from "@/components/ui/table";
 import { formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function AdminAuditLogsPage() {
   await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: logs } = await supabase
     .from("audit_logs")
     .select("*")

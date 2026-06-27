@@ -3,7 +3,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Input, Label } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { updateSettingAction } from "@/lib/data/settings";
 
 const LABELS: Record<string, string> = {
@@ -15,7 +15,7 @@ const LABELS: Record<string, string> = {
 
 export default async function AdminSettingsPage() {
   await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: settings } = await supabase.from("platform_settings").select("*").order("key");
 
   return (

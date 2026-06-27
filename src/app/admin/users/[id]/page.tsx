@@ -6,7 +6,7 @@ import { StatusBadge, Badge } from "@/components/ui/badge";
 import { AdminActionButton } from "@/components/admin/action-button";
 import { formatDate, formatUsd } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { performUserActionAction } from "@/lib/data/admin-users";
 
 export default async function AdminUserDetailPage({
@@ -19,7 +19,7 @@ export default async function AdminUserDetailPage({
   const { id } = await params;
   const { error } = await searchParams;
   await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: user } = await supabase.from("profiles").select("*").eq("id", id).single();
   if (!user) notFound();

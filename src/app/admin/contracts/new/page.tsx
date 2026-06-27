@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input, Label, Select, Textarea } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createContractByAdminAction } from "@/lib/data/admin-actions";
 
 export default async function AdminNewContractPage({
@@ -13,7 +13,7 @@ export default async function AdminNewContractPage({
 }) {
   await requireAdmin();
   const { error } = await searchParams;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: users } = await supabase.from("profiles").select("id, full_name, email").order("full_name");
 
   return (

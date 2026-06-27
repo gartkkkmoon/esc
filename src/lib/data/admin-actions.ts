@@ -204,6 +204,43 @@ export async function editContractAction(contractId: string, formData: FormData)
   redirect(`/admin/contracts/${contractId}`);
 }
 
+export async function setContractStatusAction(contractId: string, formData: FormData) {
+  const { authId } = await requireAdmin();
+  const status = String(formData.get("status") ?? "").trim();
+  const payment_status = String(formData.get("payment_status") ?? "").trim();
+
+  const supabase = createAdminClient();
+  const { data: before } = await supabase.from("escrow_contracts").select("*").eq("id", contractId).single();
+
+  const update: Record<string, unknown> = {};
+  if (status) update.status = status;
+  if (payment_status) update.payment_status = payment_status;
+
+  if (Object.keys(update).length > 0) {
+    await supabase.from("escrow_contracts").update(update).eq("id", contractId);
+  }
+
+  await logAdminAction({
+    actorId: authId,
+    actorRole: "admin",
+    action: "edit_contract",
+    entityType: "escrow_contract",
+    entityId: contractId,
+    oldValue: before ?? null,
+    newValue: update,
+    reason: "Manually set contract / payment status",
+  });
+
+  await addTimelineEvent({
+    contractId,
+    actorId: authId,
+    eventType: "edit_contract",
+    description: `Admin set status to "${status || before?.status}" / payment "${payment_status || before?.payment_status}".`,
+  });
+
+  redirect(`/admin/contracts/${contractId}`);
+}
+
 export async function createContractByAdminAction(formData: FormData) {
   const { authId } = await requireAdmin();
   const reason = String(formData.get("reason") ?? "").trim();

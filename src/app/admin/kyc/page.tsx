@@ -6,13 +6,13 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { AdminActionButton } from "@/components/admin/action-button";
 import { formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { performUserActionAction } from "@/lib/data/admin-users";
 import { FileImage, Clock4, ShieldCheck, XCircle } from "lucide-react";
 
 export default async function AdminKycQueuePage() {
   await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: submissions } = await supabase
     .from("kyc_submissions")

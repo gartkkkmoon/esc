@@ -6,12 +6,12 @@ import { StatCard } from "@/components/dashboard/stat-card";
 import { ActionCenter } from "@/components/dashboard/action-center";
 import { formatUsd, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { FileStack, DollarSign, Clock4, AlertTriangle, ShieldAlert, CheckCircle2, Wallet, Activity } from "lucide-react";
 
 export default async function AdminDashboardPage() {
   await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const [{ data: contracts }, { data: kycPending }, { data: disputesOpen }] = await Promise.all([
     supabase.from("escrow_contracts").select("*").order("created_at", { ascending: false }),

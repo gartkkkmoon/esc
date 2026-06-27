@@ -7,13 +7,13 @@ import { Button } from "@/components/ui/button";
 import { ContractChat } from "@/components/contract/contract-chat";
 import { formatDate, formatUsd } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { proposeSettlementAction, closeDisputeAction, sendDisputeMessageAction } from "@/lib/data/disputes";
 
 export default async function AdminDisputeDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { authId } = await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   const { data: dispute } = await supabase.from("disputes").select("*").eq("id", id).single();
   if (!dispute) notFound();

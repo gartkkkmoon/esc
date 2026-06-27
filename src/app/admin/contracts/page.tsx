@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Select } from "@/components/ui/input";
 import { formatUsd, formatDate } from "@/lib/utils";
 import { requireAdmin } from "@/lib/auth/session";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export default async function AdminContractsPage({
   searchParams,
@@ -15,7 +15,7 @@ export default async function AdminContractsPage({
 }) {
   await requireAdmin();
   const { status, payment_status, disputed } = await searchParams;
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   let query = supabase.from("escrow_contracts").select("*").order("created_at", { ascending: false });
   if (status) query = query.eq("status", status);
