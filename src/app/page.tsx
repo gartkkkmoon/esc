@@ -14,6 +14,8 @@ import {
   Mail,
   MapPin,
   CheckCircle2,
+  Wallet2,
+  FileCheck2,
 } from "lucide-react";
 
 export default function Home() {
@@ -44,9 +46,10 @@ export default function Home() {
                 One Standard of Trust.
               </h1>
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">
-                Broker&apos;s Title &amp; Escrow, LLC provides secure oversight of high-value
-                real estate closings and cryptocurrency transactions — every dollar reviewed
-                by hand, backed by professional escrow and compliance review.
+                Broker&apos;s Title &amp; Escrow, LLC safeguards high-value real estate closings and
+                cryptocurrency transactions with <span className="font-semibold text-white">bank-grade,
+                end-to-end encryption</span> and human oversight — every dollar verified and released
+                by hand, never automated.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
@@ -63,9 +66,9 @@ export default function Home() {
                 </Link>
               </div>
               <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
-                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> Manual oversight</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> AES-256 encrypted</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> Cold-storage custody</span>
                 <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> KYC / AML verified</span>
-                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> Audit logged</span>
               </div>
             </div>
           </div>
@@ -74,9 +77,9 @@ export default function Home() {
         {/* Feature strip */}
         <section className="border-y border-border-soft bg-background">
           <div className="mx-auto grid max-w-7xl gap-px overflow-hidden px-6 py-12 sm:grid-cols-2 lg:grid-cols-4">
-            <FeatureStripItem icon={<ShieldCheck className="h-5 w-5" />} title="Manual Oversight" desc="Staff review every release" />
-            <FeatureStripItem icon={<Lock className="h-5 w-5" />} title="Secure Transactions" desc="Funds held in protected escrow" />
-            <FeatureStripItem icon={<UserCheck className="h-5 w-5" />} title="KYC / AML SOC" desc="Identity verified above $100" />
+            <FeatureStripItem icon={<Lock className="h-5 w-5" />} title="Bank-Grade Encryption" desc="AES-256 & 256-bit SSL, end-to-end" />
+            <FeatureStripItem icon={<ShieldCheck className="h-5 w-5" />} title="Manual Oversight" desc="Every release reviewed by staff" />
+            <FeatureStripItem icon={<UserCheck className="h-5 w-5" />} title="KYC / AML Verified" desc="Identity verification & screening" />
             <FeatureStripItem icon={<Scale className="h-5 w-5" />} title="Dispute Mediation" desc="Impartial resolution support" />
           </div>
         </section>
@@ -124,12 +127,27 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Compliance band */}
-        <section id="compliance" className="border-t border-border-soft bg-background py-16">
-          <div className="mx-auto grid max-w-7xl gap-8 px-6 sm:grid-cols-3">
-            <Compliance icon={<UserCheck className="h-5 w-5 text-gold" />} title="KYC Verified" desc="Identity verification required on transactions above $100." />
-            <Compliance icon={<ShieldCheck className="h-5 w-5 text-gold" />} title="Licensed & Bonded" desc="Operating as a regulated, bonded escrow provider." />
-            <Compliance icon={<Lock className="h-5 w-5 text-gold" />} title="Audit Logged" desc="Every administrative action is recorded and reviewable." />
+        {/* Security & compliance */}
+        <section id="compliance" className="border-t border-border-soft bg-background py-20">
+          <div className="mx-auto max-w-7xl px-6">
+            <div className="mx-auto max-w-2xl text-center">
+              <span className="text-xs font-semibold uppercase tracking-[0.18em] text-gold">Security First</span>
+              <h2 className="mt-3 font-serif text-3xl font-bold text-navy">
+                Your funds and data, protected end to end
+              </h2>
+              <p className="mt-3 text-gray-600">
+                We hold ourselves to institutional security standards so you can transact with confidence —
+                whether it&apos;s a property closing or a seven-figure crypto deal.
+              </p>
+            </div>
+            <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+              <Compliance icon={<Lock className="h-5 w-5 text-gold" />} title="Bank-Grade Encryption" desc="AES-256 encryption at rest and 256-bit SSL/TLS in transit — your data is end-to-end encrypted." />
+              <Compliance icon={<Wallet2 className="h-5 w-5 text-gold" />} title="Cold-Storage Custody" desc="Escrowed crypto is held in offline, multi-signature cold wallets — never exposed to the open internet." />
+              <Compliance icon={<ShieldCheck className="h-5 w-5 text-gold" />} title="Licensed & Bonded" desc="A regulated, bonded escrow provider operating under formal compliance controls." />
+              <Compliance icon={<UserCheck className="h-5 w-5 text-gold" />} title="KYC / AML Verified" desc="Identity verification and sanctions screening on every counterparty above threshold." />
+              <Compliance icon={<FileCheck2 className="h-5 w-5 text-gold" />} title="Full Audit Trail" desc="Every release, approval, and admin action is permanently logged and reviewable." />
+              <Compliance icon={<Lock className="h-5 w-5 text-gold" />} title="Manual Release Control" desc="No funds move automatically. Each release is verified and authorized by a human officer." />
+            </div>
           </div>
         </section>
 

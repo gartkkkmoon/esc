@@ -38,7 +38,8 @@ export default function CryptoEscrowPage() {
                 <br className="hidden sm:block" /> Built on Decades of Trust
               </h1>
               <p className="mt-5 max-w-xl text-lg text-white/80">
-                Buyer and seller open an escrow contract together. Funds are confirmed on-chain,
+                Buyer and seller open an escrow contract together. Funds are held in
+                multi-signature cold storage, protected by bank-grade end-to-end encryption,
                 reviewed by our team, and released manually — never automatically.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">

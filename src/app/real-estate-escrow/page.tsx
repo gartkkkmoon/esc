@@ -28,7 +28,8 @@ export default function RealEstateEscrowPage() {
               </h1>
               <p className="mt-5 max-w-lg text-lg text-white/80">
                 Broker&apos;s Title &amp; Escrow, LLC provides professional title, escrow, and closing
-                services for residential and commercial property transactions.
+                services for residential and commercial property transactions — every file secured
+                with bank-grade encryption and handled by a dedicated escrow officer.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link

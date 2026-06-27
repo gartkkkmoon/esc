@@ -95,6 +95,26 @@ export default async function AdminUserDetailPage({
         </div>
 
         <div className="space-y-6">
+          <Card elevated className={user.is_verified ? "border-emerald-200" : "border-amber-200"}>
+            <CardHeader><CardTitle>Account Approval</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-gray-600">Current status</span>
+                {user.is_verified
+                  ? <Badge tone="green">Approved</Badge>
+                  : <Badge tone="amber">Not approved</Badge>}
+              </div>
+              {user.is_verified ? (
+                <AdminActionButton label="Revoke Approval" action={bind("unverify_user")} variant="danger" />
+              ) : (
+                <AdminActionButton label="Approve Account" action={bind("verify_user")} variant="success" />
+              )}
+              <p className="text-xs text-gray-400">
+                Approving marks this account verified so the user can transact. You can revoke it any time.
+              </p>
+            </CardContent>
+          </Card>
+
           <Card>
             <CardHeader><CardTitle>User Controls</CardTitle></CardHeader>
             <CardContent className="grid grid-cols-2 gap-2">
