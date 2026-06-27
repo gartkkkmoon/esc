@@ -48,8 +48,8 @@ export default function Home() {
               <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">
                 Broker&apos;s Title &amp; Escrow, LLC safeguards high-value real estate closings and
                 cryptocurrency transactions with <span className="font-semibold text-white">bank-grade,
-                end-to-end encryption</span> and human oversight — every dollar verified and released
-                by hand, never automated.
+                end-to-end encryption</span> — every transaction verified and released under strict
+                review, never automated.
               </p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
@@ -78,7 +78,7 @@ export default function Home() {
         <section className="border-y border-border-soft bg-background">
           <div className="mx-auto grid max-w-7xl gap-px overflow-hidden px-6 py-12 sm:grid-cols-2 lg:grid-cols-4">
             <FeatureStripItem icon={<Lock className="h-5 w-5" />} title="Bank-Grade Encryption" desc="AES-256 & 256-bit SSL, end-to-end" />
-            <FeatureStripItem icon={<ShieldCheck className="h-5 w-5" />} title="Manual Oversight" desc="Every release reviewed by staff" />
+            <FeatureStripItem icon={<ShieldCheck className="h-5 w-5" />} title="Reviewed Releases" desc="Every release verified before settlement" />
             <FeatureStripItem icon={<UserCheck className="h-5 w-5" />} title="KYC / AML Verified" desc="Identity verification & screening" />
             <FeatureStripItem icon={<Scale className="h-5 w-5" />} title="Dispute Mediation" desc="Impartial resolution support" />
           </div>
@@ -91,7 +91,7 @@ export default function Home() {
               <h2 className="font-serif text-3xl font-bold text-navy">Choose Your Escrow Service</h2>
               <p className="mt-3 text-gray-600">
                 Purpose-built workflows for two very different transactions, held to the same
-                standard of manual, professional oversight.
+                standard of professional, secure review.
               </p>
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2">
@@ -146,7 +146,7 @@ export default function Home() {
               <Compliance icon={<ShieldCheck className="h-5 w-5 text-gold" />} title="Licensed & Bonded" desc="A regulated, bonded escrow provider operating under formal compliance controls." />
               <Compliance icon={<UserCheck className="h-5 w-5 text-gold" />} title="KYC / AML Verified" desc="Identity verification and sanctions screening on every counterparty above threshold." />
               <Compliance icon={<FileCheck2 className="h-5 w-5 text-gold" />} title="Full Audit Trail" desc="Every release, approval, and admin action is permanently logged and reviewable." />
-              <Compliance icon={<Lock className="h-5 w-5 text-gold" />} title="Manual Release Control" desc="No funds move automatically. Each release is verified and authorized by a human officer." />
+              <Compliance icon={<Lock className="h-5 w-5 text-gold" />} title="Controlled Releases" desc="No funds move automatically — each release is verified and authorized before settlement." />
             </div>
           </div>
         </section>

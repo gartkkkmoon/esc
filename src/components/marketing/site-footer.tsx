@@ -16,7 +16,7 @@ export function SiteFooter() {
           />
           <p className="mt-4 text-sm leading-relaxed">
             Licensed title, closing, and escrow services. Secure escrow for real estate and
-            digital assets, with manual oversight on every transaction.
+            digital assets, secured and verified on every transaction.
           </p>
         </div>
 
