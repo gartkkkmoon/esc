@@ -21,20 +21,29 @@ export default function Home() {
     <>
       <SiteHeader />
       <main className="flex-1">
-        {/* Hero */}
-        <section className="relative overflow-hidden bg-white">
-          <div className="pointer-events-none absolute -right-40 -top-40 h-96 w-96 rounded-full bg-gold-tint blur-3xl" />
-          <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-6 py-20 lg:grid-cols-2">
-            <div>
-              <span className="inline-flex items-center gap-2 rounded-full border border-gold/40 bg-gold-tint px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold">
+        {/* Hero — full-bleed corporate */}
+        <section className="relative overflow-hidden bg-navy-900">
+          <Image
+            src="/images/card-realestate.jpg"
+            alt="Residential property closing"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[60%_center]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-navy-900 via-navy-900/85 to-navy-900/40" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy-900/80 via-transparent to-transparent" />
+          <div className="relative mx-auto max-w-7xl px-6 py-24 md:py-32">
+            <div className="max-w-2xl">
+              <span className="inline-flex items-center gap-2 border-l-2 border-gold pl-3 text-xs font-semibold uppercase tracking-[0.18em] text-gold">
                 <ShieldCheck className="h-3.5 w-3.5" /> Licensed · Bonded · Insured
               </span>
-              <h1 className="mt-5 font-serif text-5xl font-bold leading-[1.05] tracking-tight text-navy md:text-6xl">
+              <h1 className="mt-5 font-serif text-5xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
                 Two Escrow Services.
                 <br />
                 One Standard of Trust.
               </h1>
-              <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-600">
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-white/75">
                 Broker&apos;s Title &amp; Escrow, LLC provides secure oversight of high-value
                 real estate closings and cryptocurrency transactions — every dollar reviewed
                 by hand, backed by professional escrow and compliance review.
@@ -42,33 +51,21 @@ export default function Home() {
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   href="/real-estate-escrow"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-navy px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] transition-colors hover:bg-navy-light"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-gold px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] transition-opacity hover:opacity-90"
                 >
                   <Building2 className="h-4 w-4" /> Real Estate Escrow
                 </Link>
                 <Link
                   href="/crypto-escrow"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-lg bg-gold px-6 text-sm font-semibold text-white shadow-[var(--shadow-card)] transition-opacity hover:opacity-90"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-md border border-white/30 px-6 text-sm font-semibold text-white transition-colors hover:bg-white/10"
                 >
                   <Bitcoin className="h-4 w-4" /> Crypto Escrow
                 </Link>
               </div>
-              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
-                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Manual oversight</span>
-                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> KYC / AML verified</span>
-                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Audit logged</span>
-              </div>
-            </div>
-            <div className="relative">
-              <div className="overflow-hidden rounded-3xl bg-navy-900 shadow-[0_24px_60px_rgba(11,21,48,0.25)]">
-                <Image
-                  src="/images/home-hero.jpg"
-                  alt="Real estate and cryptocurrency escrow, secured"
-                  width={896}
-                  height={1200}
-                  priority
-                  className="h-full w-full object-cover"
-                />
+              <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/70">
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> Manual oversight</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> KYC / AML verified</span>
+                <span className="flex items-center gap-1.5"><CheckCircle2 className="h-4 w-4 text-gold" /> Audit logged</span>
               </div>
             </div>
           </div>
@@ -97,7 +94,7 @@ export default function Home() {
             <div className="mt-12 grid gap-8 md:grid-cols-2">
               <ServiceCard
                 href="/real-estate-escrow"
-                banner={<PhotoBanner src="/images/card-realestate.jpg" alt="Residential real estate closing" />}
+                banner={<PhotoBanner src="/images/realestate-hero.jpg" alt="Residential real estate closing" />}
                 title="Real Estate Escrow"
                 desc="Secure closings for residential and commercial property transactions."
                 points={[
@@ -210,9 +207,9 @@ function ServiceCard({
   ctaTone: "navy" | "gold";
 }) {
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-border-soft bg-white shadow-[var(--shadow-card)]">
+    <div className="flex flex-col overflow-hidden rounded-md border border-border-soft bg-white shadow-[var(--shadow-card)]">
       {banner}
-      <div className="flex flex-1 flex-col p-8">
+      <div className="flex flex-1 flex-col border-t-2 border-gold p-8">
         <h3 className="font-serif text-2xl font-bold text-navy">{title}</h3>
         <p className="mt-2 text-sm text-gray-500">{desc}</p>
         <ul className="mt-5 space-y-2.5 text-sm text-gray-600">
@@ -225,7 +222,7 @@ function ServiceCard({
         </ul>
         <Link
           href={href}
-          className={`mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-lg text-sm font-semibold text-white transition-opacity hover:opacity-90 ${
+          className={`mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-md text-sm font-semibold text-white transition-opacity hover:opacity-90 ${
             ctaTone === "gold" ? "bg-gold" : "bg-navy"
           }`}
         >
