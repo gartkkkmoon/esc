@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUserRoles } from "@/lib/supabase/admin";
 import type { Profile, UserRole } from "@/lib/supabase/types";
 
 export async function getCurrentUser() {
@@ -13,12 +14,9 @@ export async function getCurrentUser() {
     .eq("id", data.user.id)
     .single();
 
-  const { data: roleRows } = await supabase
-    .from("user_roles")
-    .select("role")
-    .eq("user_id", data.user.id);
-
-  const roles = (roleRows ?? []).map((r) => r.role as UserRole);
+  // Roles are resolved with the service-role client so admin detection never
+  // depends on RLS policies on user_roles being perfectly configured.
+  const roles = (await getUserRoles(data.user.id)) as UserRole[];
 
   return { authId: data.user.id, profile: profile as Profile | null, roles };
 }

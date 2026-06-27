@@ -12,3 +12,10 @@ export function createAdminClient() {
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
 }
+
+/** Resolve a user's roles via the service-role client (RLS-independent). */
+export async function getUserRoles(userId: string): Promise<string[]> {
+  const admin = createAdminClient();
+  const { data } = await admin.from("user_roles").select("role").eq("user_id", userId);
+  return (data ?? []).map((r) => r.role as string);
+}
