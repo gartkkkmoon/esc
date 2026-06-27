@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/session";
 import { logAdminAction, addTimelineEvent } from "@/lib/data/audit";
 import type { AdminActionType, ContractStatus, PaymentStatus } from "@/lib/supabase/types";
@@ -73,7 +73,7 @@ export async function performContractActionAction(
   }
   const internalNote = String(formData.get("internal_note") ?? "").trim();
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: before } = await supabase.from("escrow_contracts").select("*").eq("id", contractId).single();
 
   const update: Record<string, unknown> = {};
@@ -118,7 +118,7 @@ export async function performContractActionAction(
 
 export async function addInternalNoteAction(contractId: string, formData: FormData) {
   const { authId } = await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const body = String(formData.get("body") ?? "").trim();
   if (!body) return;
 
@@ -138,7 +138,7 @@ export async function addInternalNoteAction(contractId: string, formData: FormDa
 
 export async function adminSendMessageAction(contractId: string, formData: FormData) {
   const { authId } = await requireAdmin();
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const body = String(formData.get("body") ?? "").trim();
   if (!body) return;
 
@@ -167,7 +167,7 @@ export async function editContractAction(contractId: string, formData: FormData)
     redirect(`/admin/contracts/${contractId}?error=${encodeURIComponent("A reason is required to edit a contract.")}`);
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: before } = await supabase.from("escrow_contracts").select("*").eq("id", contractId).single();
 
   const update = {
@@ -211,7 +211,7 @@ export async function createContractByAdminAction(formData: FormData) {
     redirect(`/admin/contracts/new?error=${encodeURIComponent("A reason is required to create a manual contract.")}`);
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const amountUsd = Number(formData.get("amount_usd") ?? 0);
 
   const { data: contract, error } = await supabase
@@ -263,7 +263,7 @@ export async function assignMediatorAction(contractId: string, formData: FormDat
   }
   const mediatorId = String(formData.get("mediator_id") ?? "");
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   await supabase.from("escrow_contracts").update({ mediator_id: mediatorId, status: "under_mediation" }).eq("id", contractId);
   await supabase.from("disputes").update({ mediator_id: mediatorId, status: "mediation" }).eq("contract_id", contractId);
 

@@ -49,6 +49,28 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
     ? `${process.env.NEXT_PUBLIC_SITE_URL}/invite/${invites[0].token}`
     : null;
 
+  // Deposit address shown to depositors: the admin-set per-contract address,
+  // falling back to the platform wallet configured for this asset.
+  let platformWallet: { address: string; network: string | null } | null = null;
+  if (contract.crypto_asset) {
+    const { data } = await supabase
+      .from("wallet_addresses")
+      .select("address, network")
+      .eq("crypto_asset", contract.crypto_asset)
+      .eq("is_platform_wallet", true)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    platformWallet = data;
+  }
+  const depositAddress = contract.deposit_address ?? platformWallet?.address ?? null;
+  const depositNetwork = contract.payment_network ?? platformWallet?.network ?? null;
+  const canDeposit =
+    (isBuyer || isSeller) &&
+    contract.seller_id &&
+    ["unpaid", "pending"].includes(contract.payment_status) &&
+    !kycBlocked;
+
   return (
     <>
       <PageHeader
@@ -125,17 +147,28 @@ export default async function ContractDetailPage({ params }: { params: Promise<{
             </Card>
           )}
 
-          {isBuyer && contract.seller_id && contract.payment_status === "unpaid" && !kycBlocked && (
+          {canDeposit && (
             <Card>
-              <CardHeader><CardTitle>Send Payment</CardTitle></CardHeader>
+              <CardHeader><CardTitle>Send Your Deposit</CardTitle></CardHeader>
               <CardContent className="space-y-3 text-sm">
-                <Info label="Deposit address" value={contract.deposit_address ?? "Will be assigned by admin"} />
-                <Info label="Asset" value={`${contract.crypto_asset} on ${contract.payment_network ?? "TBD"}`} />
+                <p className="rounded-lg bg-gold-tint px-3 py-2 text-xs text-navy">
+                  Send your {contract.crypto_asset} to the address below. Once received, the escrow
+                  officer verifies it on-chain and manually marks the deposit confirmed.
+                </p>
+                <Info
+                  label="Deposit address"
+                  value={
+                    depositAddress
+                      ? <span className="break-all font-mono text-xs">{depositAddress}</span>
+                      : "Will be assigned by the escrow officer shortly"
+                  }
+                />
+                <Info label="Asset" value={`${contract.crypto_asset} on ${depositNetwork ?? "TBD"}`} />
                 <Info label="Amount" value={`${contract.amount_crypto ?? "—"} ${contract.crypto_asset}`} />
                 <form action={submitPaymentHashAction.bind(null, contract.id)} className="space-y-2">
-                  <Label htmlFor="transaction_hash">Transaction hash</Label>
+                  <Label htmlFor="transaction_hash">Your transaction hash</Label>
                   <Input id="transaction_hash" name="transaction_hash" placeholder="0x..." required />
-                  <Button type="submit" size="sm">Submit Payment Hash</Button>
+                  <Button type="submit" size="sm">Submit Transaction Hash</Button>
                 </form>
               </CardContent>
             </Card>

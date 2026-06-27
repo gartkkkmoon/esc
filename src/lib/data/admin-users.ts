@@ -1,7 +1,7 @@
 "use server";
 
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/auth/session";
 import { logAdminAction } from "@/lib/data/audit";
 import type { AdminActionType, AccountStatus, KycStatus } from "@/lib/supabase/types";
@@ -26,7 +26,7 @@ export async function performUserActionAction(userId: string, action: AdminActio
     redirect(`/admin/users/${userId}?error=${encodeURIComponent("A reason is required for this action.")}`);
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: before } = await supabase.from("profiles").select("*").eq("id", userId).single();
 
   const update: Record<string, unknown> = {};

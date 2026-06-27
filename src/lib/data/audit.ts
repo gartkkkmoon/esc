@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import type { AdminActionType, UserRole } from "@/lib/supabase/types";
 
 export async function logAdminAction(params: {
@@ -11,7 +11,7 @@ export async function logAdminAction(params: {
   newValue?: Record<string, unknown> | null;
   reason: string;
 }) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   await supabase.from("audit_logs").insert({
     actor_id: params.actorId,
     actor_role: params.actorRole,
@@ -31,7 +31,7 @@ export async function addTimelineEvent(params: {
   description: string;
   metadata?: Record<string, unknown>;
 }) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   await supabase.from("contract_timeline_events").insert({
     contract_id: params.contractId,
     actor_id: params.actorId ?? null,
